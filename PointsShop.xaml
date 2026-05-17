@@ -114,6 +114,11 @@
                                  <TextBlock x:Name="AvatarFramesTitleTextBlock" Text="Avatar Frames" FontSize="28" FontWeight="Bold" Margin="0,0,0,20"/>
                                 
                                 <GridView x:Name="ShopGridView" ItemsSource="{x:Bind Items}" SelectionMode="None" IsItemClickEnabled="False">
+                                    <GridView.ItemContainerStyle>
+                                        <Style TargetType="GridViewItem">
+                                            <Setter Property="IsTabStop" Value="False"/>
+                                        </Style>
+                                    </GridView.ItemContainerStyle>
                                     <GridView.ItemTemplate>
                                         <DataTemplate x:DataType="local:ShopItem">
                                             <StackPanel Padding="15" Background="{ThemeResource LeaderboardItemBackgroundBrush}" Width="200" Margin="10" CornerRadius="4">
@@ -165,6 +170,11 @@
                                     <StackPanel>
                                  <TextBlock x:Name="ThemesTitleTextBlock" Text="Themes" FontSize="28" FontWeight="Bold" Margin="0,0,0,20"/>
                                 <GridView x:Name="ThemesGridView" ItemsSource="{x:Bind Themes}" SelectionMode="None" IsItemClickEnabled="False">
+                                    <GridView.ItemContainerStyle>
+                                        <Style TargetType="GridViewItem">
+                                            <Setter Property="IsTabStop" Value="False"/>
+                                        </Style>
+                                    </GridView.ItemContainerStyle>
                                     <GridView.ItemTemplate>
                                         <DataTemplate x:DataType="local:ShopItem">
                                             <StackPanel Padding="15" Background="{ThemeResource LeaderboardItemBackgroundBrush}" Width="200" Margin="10" CornerRadius="4">
