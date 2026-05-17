@@ -58,7 +58,7 @@
                                            FontSize="28" 
                                            FontWeight="Bold" 
                                            HorizontalAlignment="Right"/>
-                                <TextBlock Text="v1.1.1 UWP" 
+                                <TextBlock Text="v1.2.0 UWP" 
                                            FontSize="14" 
                                            Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
                                            HorizontalAlignment="Right"/>
