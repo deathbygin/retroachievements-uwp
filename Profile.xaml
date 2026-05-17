@@ -342,6 +342,17 @@
 
                                     <TextBlock Text="Account" FontSize="24" FontWeight="Semibold" Margin="0,10,0,10"/>
                                     <Button x:Name="ClearCredentialsButton" Content="Clear Saved Credentials" Width="300" Height="50" FontSize="16" Click="ClearCredentials_Click" CornerRadius="4" FontWeight="Semibold" Margin="0,0,0,0"/>
+                                    
+                                    <!-- Disclaimer -->
+                                    <TextBlock Text="Disclaimer: RetroAchievements UWP is a free vibe coded app. Do not redistribute the app / code behind paywalls or anywhere AI generated code is not allowed." 
+                                               FontSize="11" 
+                                               FontStyle="Italic"
+                                               Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+                                               Opacity="0.6" 
+                                               TextWrapping="Wrap" 
+                                               MaxWidth="400" 
+                                               HorizontalAlignment="Left" 
+                                               Margin="0,30,0,0"/>
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
