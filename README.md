@@ -7,12 +7,16 @@ Disclaimer: This app is vibe-coded. Use at your own risk and do not distribute t
 - Quickly view recently unlocked achievements and recently played games.
 - View your Want to Play Games list and achievements for those games.
 - View leaderboard, leaders, and your score/rank as well.
-- Customizable app theme (accent color, background image, dark/light theme).
+- Unlock Avatar Frames and new Themes as you earn RetroAchievement points!
+- Most themes are customizable (accent color, custom wallpaper); includes a fully user-customized theme.
 
 ![alt text](https://github.com/deathbygin/RetroAchievements-UWP/blob/main/Assets/screen_profile.png "Screenshot 1")
 ![alt text](https://github.com/deathbygin/RetroAchievements-UWP/blob/main/Assets/screen_info.png "Screenshot 2")
 ![alt text](https://github.com/deathbygin/RetroAchievements-UWP/blob/main/Assets/screen_leader.png "Screenshot 3")
 ![alt text](https://github.com/deathbygin/RetroAchievements-UWP/blob/main/Assets/screen_settings.png "Screenshot 4")
+![alt text](https://github.com/deathbygin/RetroAchievements-UWP/blob/main/Assets/Screenshot%202026-05-17%20162348.png "Screenshot 5")
+![alt text](https://github.com/deathbygin/RetroAchievements-UWP/blob/main/Assets/Screenshot%202026-05-17%20162404.png "Screenshot 6")
+
 
 ## Installation
 Download the .msixbundle (https://github.com/deathbygin/RetroAchievements-UWP/releases) and install it via the Xbox Dev Portal or install as a normal UWP app on PC.
