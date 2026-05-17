@@ -141,7 +141,7 @@
                 <!-- Unified Blade Content Background (Visible only in Blade theme) -->
                 <Border x:Name="BladeContentBackground" Grid.Row="1" Background="#141414" BorderBrush="#52B043" BorderThickness="2" CornerRadius="15" Margin="45,60,45,30" Visibility="Collapsed"/>
 
-                <Pivot x:Name="ProfilePivot" Grid.Row="1" Margin="0,5,0,0" SelectionChanged="ProfilePivot_SelectionChanged">
+                <Pivot x:Name="ProfilePivot" Grid.Row="1" Margin="45,5,45,0" SelectionChanged="ProfilePivot_SelectionChanged">
                     <PivotItem x:Name="AchievementsTab" Header="Achievements">
                         <Viewbox Stretch="Uniform" VerticalAlignment="Top">
                             <StackPanel Orientation="Vertical" Padding="15" Width="1000">
@@ -364,7 +364,7 @@
         <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Top">
             <Grid Width="1400" Height="800">
                 <!-- Blade UI Overlay (Back in the main Viewbox, but using Paths to avoid transparency bugs) -->
-                <Grid x:Name="BladeUIOverlay" Grid.Row="1" Visibility="Collapsed" Margin="-20,0,-20,0" Canvas.ZIndex="100">
+                <Grid x:Name="BladeUIOverlay" Grid.Row="1" Visibility="Collapsed" Margin="45,0,45,0" Canvas.ZIndex="100">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>

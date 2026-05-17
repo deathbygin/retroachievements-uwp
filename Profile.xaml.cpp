@@ -1387,8 +1387,8 @@ void Profile::UpdateBladePositions(int selectedIndex)
         BladeContentBackground->BorderBrush = accentBrush;
         // The stacks are leftCount * 30 + 15 pixels wide. 
         // We add a little extra padding (20px) to clear the blades.
-        double leftMargin = (leftCount * 30) + 20;
-        double rightMargin = (rightCount * 30) + 20;
+        double leftMargin = (leftCount * 30) + 20 + 45;
+        double rightMargin = (rightCount * 30) + 20 + 45;
         BladeContentBackground->Margin = Windows::UI::Xaml::Thickness(leftMargin, 60, rightMargin, 30);
         
         if (ProfilePivot != nullptr)
