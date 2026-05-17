@@ -10,7 +10,7 @@
 
     <Grid x:Name="RootGrid">
         <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-            <Grid Width="1120" Height="800">
+            <Grid Width="1400" Height="800">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
