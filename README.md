@@ -8,6 +8,7 @@ Disclaimer: This app is vibe-coded. Use at your own risk and do not distribute t
 - View your Want to Play Games list and achievements for those games.
 - View leaderboard, leaders, and your score/rank as well.
 - Unlock Avatar Frames and new Themes as you earn RetroAchievement points!
+- Themes include different tab styles (Classic text, icons, or Blade dashboard inspired).
 - Most themes are customizable (accent color, custom wallpaper); includes a fully user-customized theme.
 
 ![alt text](https://github.com/deathbygin/RetroAchievements-UWP/blob/main/Assets/screen_profile.png "Screenshot 1")
