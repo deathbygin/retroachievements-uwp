@@ -40,6 +40,7 @@ namespace RetroAchievements_UWP
     {
     public:
         property Windows::UI::Xaml::Media::ImageSource^ ProfileImage;
+        property Platform::String^ ProfileImageUrl;
         property Platform::String^ Username;
         property Platform::String^ MemberSince;
         property Platform::String^ Motto;
@@ -79,15 +80,23 @@ namespace RetroAchievements_UWP
         void ClearCredentials_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
         void NavigateToTab(int tabIndex);
         void ViewAllGames_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+        void NavigatePointsShop_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
         void RecentGamesGridView_ItemClick(Platform::Object^ sender, Windows::UI::Xaml::Controls::ItemClickEventArgs^ e);
         void RecentAchievementsGridView_ItemClick(Platform::Object^ sender, Windows::UI::Xaml::Controls::ItemClickEventArgs^ e);
         void WantToPlayGridView_ItemClick(Platform::Object^ sender, Windows::UI::Xaml::Controls::ItemClickEventArgs^ e);
         void HardcoreModeToggle_Toggled(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-        void BackgroundThemeToggle_Toggled(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+        void ThemeSelector_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e);
+        void ProfilePivot_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e);
+        void UpdateRetroStationTabHeaders(int selectedIndex);
+        void UpdateBladePositions(int selectedIndex);
+        void Blade_PointerPressed(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);
         void AccentColorGridView_ItemClick(Platform::Object^ sender, Windows::UI::Xaml::Controls::ItemClickEventArgs^ e);
         void AccentColorGridView_ContainerContentChanging(Windows::UI::Xaml::Controls::ListViewBase^ sender, Windows::UI::Xaml::Controls::ContainerContentChangingEventArgs^ args);
         void ChooseBackgroundImage_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
         void ClearBackgroundImage_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+        void ChooseFontButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+        void ClearFontButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+        void CustomTabStyleSelector_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e);
         void ApplyThemeSettings();
         void OnContainerContentChanging(Windows::UI::Xaml::Controls::ListViewBase^ sender, Windows::UI::Xaml::Controls::ContainerContentChangingEventArgs^ args);
         void Item_GotFocus(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);

@@ -9,6 +9,51 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     KeyDown="Page_KeyDown">
 
+    <Page.Resources>
+        <!-- Custom Style to completely remove the Pivot selection indicator (pipe) -->
+        <Style TargetType="PivotHeaderItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Height" Value="48" />
+            <Setter Property="Padding" Value="15,0" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PivotHeaderItem">
+                        <Grid x:Name="Grid" Background="Transparent">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Unselected" />
+                                    <VisualState x:Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource PivotHeaderItemForegroundSelected}" />
+                                            <Setter Target="ContentPresenter.FontWeight" Value="Bold" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="SelectedUnfocused">
+                                        <VisualState.Setters>
+                                            <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource PivotHeaderItemForegroundSelected}" />
+                                            <Setter Target="ContentPresenter.FontWeight" Value="Bold" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter x:Name="ContentPresenter"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                FontSize="{TemplateBinding FontSize}"
+                                FontFamily="{TemplateBinding FontFamily}"
+                                FontWeight="{TemplateBinding FontWeight}"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Margin="{TemplateBinding Padding}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
     <Grid x:Name="RootGrid">
         <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Top">
             <Grid Width="1120" Height="800">
@@ -18,147 +63,242 @@
                 </Grid.RowDefinitions>
 
                 <!-- Profile Information Section with Image (Sticky Header) -->
-                <Grid Grid.Row="0" Margin="10,10,20,0">
-                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Spacing="20">
-                        <!-- User Profile Image -->
-                        <Image x:Name="UserProfileImage" Width="84" Height="84" Stretch="UniformToFill"/>
+                <Grid Grid.Row="0" Margin="20,5,20,5">
+                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Orientation="Horizontal" Spacing="25">
+                        <!-- User Profile Image (Circular with Frame) -->
+                        <Grid Width="120" Height="120">
+                            <Border x:Name="AvatarBorder" Width="100" Height="100" CornerRadius="50" BorderThickness="3" BorderBrush="{ThemeResource SystemControlHighlightAccentBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Border.Background>
+                                    <ImageBrush x:Name="ProfileImageBrush" Stretch="UniformToFill"/>
+                                </Border.Background>
+                            </Border>
+                            <Image x:Name="AvatarFrameImage" Width="120" Height="120" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Grid>
 
                         <!-- Profile Text Information -->
-                        <StackPanel Orientation="Vertical" Spacing="4">
-                            <TextBlock Text="User Profile" FontSize="20" FontWeight="Semibold"/>
-                            <TextBlock x:Name="UserTextBlock" FontSize="11"/>
-                            <TextBlock x:Name="MemberSinceTextBlock" FontSize="11"/>
-                            <TextBlock x:Name="MottoTextBlock" FontSize="11"/>
-                            <TextBlock x:Name="TotalPointsTextBlock" FontSize="11"/>
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                             <TextBlock x:Name="UserTextBlock" FontSize="36" FontWeight="Bold" Margin="0,0,0,-5"/>
+                             <TextBlock x:Name="MottoTextBlock" FontSize="16" Opacity="0.8" FontStyle="Italic" Margin="0,0,0,10"/>
+                             
+                             <StackPanel Orientation="Horizontal" Spacing="20">
+                                 <StackPanel>
+                                     <TextBlock Text="MEMBER SINCE" FontSize="10" FontWeight="Bold" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" Opacity="0.8"/>
+                                     <TextBlock x:Name="MemberSinceTextBlock" FontSize="15" FontWeight="SemiBold"/>
+                                 </StackPanel>
+                                 <Rectangle Width="1" Height="30" Fill="{ThemeResource SystemControlForegroundChromeDisabledLowBrush}" VerticalAlignment="Center"/>
+                                 <StackPanel>
+                                     <TextBlock x:Name="TotalPointsLabel" Text="TOTAL POINTS" FontSize="10" FontWeight="Bold" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" Opacity="0.8"/>
+                                     <TextBlock x:Name="TotalPointsTextBlock" FontSize="15" FontWeight="SemiBold"/>
+                                 </StackPanel>
+                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
 
-                    <!-- App Title Text -->
                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <TextBlock x:Name="AppTitleTextBlock" Text="RetroAchievements" 
-                                   FontSize="28" 
-                                   FontWeight="Bold" 
-                                   HorizontalAlignment="Right"/>
-                        <TextBlock Text="v1.0.0" 
-                                   FontSize="14" 
-                                   Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
-                                   HorizontalAlignment="Right"/>
+                        <Grid>
+                            <StackPanel x:Name="AppTitleTextStack" HorizontalAlignment="Right">
+                                <TextBlock x:Name="AppTitleTextBlock" Text="RetroAchievements" 
+                                           FontSize="28" 
+                                           FontWeight="Bold" 
+                                           HorizontalAlignment="Right"/>
+                                <TextBlock Text="v1.1.1 UWP" 
+                                           FontSize="14" 
+                                           Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+                                           HorizontalAlignment="Right"/>
+                            </StackPanel>
+                            <Image x:Name="NetflixLogoImage" 
+                                   Source="ms-appx:///Assets/Theme/Netflix/ico.png" 
+                                   Height="180" 
+                                   HorizontalAlignment="Right" 
+                                   Visibility="Collapsed"
+                                   Stretch="Uniform"/>
+                            <Image x:Name="SteamLogoImage" 
+                                   Source="ms-appx:///Assets/Theme/Steam/ico.png" 
+                                   Height="120" 
+                                   HorizontalAlignment="Right" 
+                                   Visibility="Collapsed"
+                                   Stretch="Uniform"/>
+                            <Image x:Name="HedgehogLogoImage" 
+                                   Source="ms-appx:///Assets/Theme/Hedgehog/ico.png" 
+                                   Height="130" 
+                                   HorizontalAlignment="Right" 
+                                   Visibility="Collapsed"
+                                   Stretch="Uniform"/>
+                            <Image x:Name="BladeLogoImage" 
+                                   Source="ms-appx:///Assets/Theme/Blade/ico.png" 
+                                   Height="130" 
+                                   HorizontalAlignment="Right" 
+                                   Visibility="Collapsed"
+                                   Stretch="Uniform"/>
+                        </Grid>
                     </StackPanel>
                 </Grid>
+                <Rectangle Grid.Row="1" Height="2" VerticalAlignment="Top" Fill="{ThemeResource SystemControlHighlightAccentBrush}" Opacity="0.5" Margin="20,10,20,0" Visibility="{ThemeResource HeaderSeparatorVisibility}"/>
 
                 <!-- Tabs Section (Sticky Headers, Scrollable Content) -->
-                <Pivot x:Name="ProfilePivot" Grid.Row="1" Margin="0,20,0,0">
-                    <PivotItem Header="Achievements">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Orientation="Vertical" Padding="20">
-                                <TextBlock Text="Recently Unlocked Achievements" FontSize="28" FontWeight="Semibold" Margin="0,0,0,20"/>
-                                <GridView x:Name="RecentAchievementsGridView" Height="120"
-                                          ScrollViewer.HorizontalScrollMode="Disabled"
-                                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                          ScrollViewer.VerticalScrollMode="Disabled"
-                                          ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                          IsItemClickEnabled="True"
-                                          ItemClick="RecentAchievementsGridView_ItemClick"
-                                          ContainerContentChanging="OnContainerContentChanging">
-                                    <GridView.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="8"/>
-                                        </ItemsPanelTemplate>
-                                    </GridView.ItemsPanel>
-                                    <GridView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Image Source="{Binding ImageUrl}" Width="100" Height="100" Margin="10" Stretch="UniformToFill">
-                                                <ToolTipService.ToolTip>
-                                                    <ToolTip Padding="6">
-                                                        <StackPanel Spacing="3">
-                                                             <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="18"/>
-                                                             <TextBlock Text="{Binding GameTitle}" FontStyle="Italic" FontSize="14"/>
-                                                             <TextBlock Text="{Binding Description}" FontSize="14" TextWrapping="Wrap" MaxWidth="300"/>
-                                                             <TextBlock Text="{Binding Points}" FontSize="14"/>
-                                                             <TextBlock Text="{Binding DateEarnedText}" FontSize="12" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
-                                                        </StackPanel>
-                                                    </ToolTip>
-                                                </ToolTipService.ToolTip>
-                                            </Image>
-                                        </DataTemplate>
-                                    </GridView.ItemTemplate>
-                                </GridView>
+                <Rectangle x:Name="TabBackgroundBar" Grid.Row="1" Fill="#316B9D" Height="48" VerticalAlignment="Top" Margin="0,5,0,0"/>
+                <Rectangle Grid.Row="1" Height="2" VerticalAlignment="Top" Fill="{ThemeResource SystemControlHighlightAccentBrush}" Opacity="0.5" Margin="20,53,20,0" Visibility="{ThemeResource HeaderSeparatorVisibility}"/>
+                <!-- Unified Blade Content Background (Visible only in Blade theme) -->
+                <Border x:Name="BladeContentBackground" Grid.Row="1" Background="#141414" BorderBrush="#52B043" BorderThickness="2" CornerRadius="15" Margin="45,60,45,30" Visibility="Collapsed"/>
 
-                                <TextBlock Text="Recently Played Games" FontSize="28" FontWeight="Semibold" Margin="0,20,0,20"/>
-                                <GridView x:Name="RecentGamesGridView" Height="250"
-                                          ScrollViewer.HorizontalScrollMode="Disabled"
-                                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                          ScrollViewer.VerticalScrollMode="Disabled"
-                                          ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                          IsItemClickEnabled="True"
-                                          ItemClick="RecentGamesGridView_ItemClick"
-                                          ContainerContentChanging="OnContainerContentChanging">
-                                    <GridView.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="9"/>
-                                        </ItemsPanelTemplate>
-                                    </GridView.ItemsPanel>
-                                    <GridView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Image Source="{Binding ImageUrl}" Width="100" Height="100" Margin="10" Stretch="UniformToFill">
-                                                <ToolTipService.ToolTip>
-                                                    <ToolTip Padding="6">
-                                                        <StackPanel Spacing="3">
-                                                            <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="18"/>
-                                                             <TextBlock Text="{Binding ConsoleName}" FontSize="14" FontStyle="Italic" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
-                                                             <TextBlock Text="{Binding AchievementProgress}" FontSize="14"/>
-                                                             <ProgressBar Value="{Binding NumAchieved}" Maximum="{Binding NumPossibleAchievements}" Height="6" CornerRadius="2"/>
-                                                         </StackPanel>
-                                                    </ToolTip>
-                                                </ToolTipService.ToolTip>
-                                            </Image>
-                                        </DataTemplate>
-                                    </GridView.ItemTemplate>
-                                </GridView>
-                                <Button x:Name="ViewAllGamesButton" Content="View All Games" HorizontalAlignment="Center" Margin="0,5,0,0" FontSize="18" Padding="20,10" Click="ViewAllGames_Click" CornerRadius="4" FontWeight="Semibold"/>
+                <Pivot x:Name="ProfilePivot" Grid.Row="1" Margin="0,5,0,0" SelectionChanged="ProfilePivot_SelectionChanged">
+                    <PivotItem x:Name="AchievementsTab" Header="Achievements">
+                        <Viewbox Stretch="Uniform" VerticalAlignment="Top">
+                            <StackPanel Orientation="Vertical" Padding="15" Width="1000">
+                                <StackPanel x:Name="RecentAchievementsSection">
+                                    <TextBlock x:Name="RecentAchievementsTitle" Text="Recently Unlocked Achievements" FontSize="22" FontWeight="Semibold" Margin="0,0,0,5"/>
+                                    <GridView x:Name="RecentAchievementsGridView" Height="120"
+                                              ScrollViewer.HorizontalScrollMode="Disabled"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                              ScrollViewer.VerticalScrollMode="Disabled"
+                                              ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                              IsItemClickEnabled="True"
+                                              ItemClick="RecentAchievementsGridView_ItemClick"
+                                              ContainerContentChanging="OnContainerContentChanging">
+                                        <GridView.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="8"/>
+                                            </ItemsPanelTemplate>
+                                        </GridView.ItemsPanel>
+                                        <GridView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Width="90" Height="90" Margin="5">
+                                                    <Border x:Name="IconBorder" Width="90" Height="90" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <Image x:Name="IconImage" Stretch="UniformToFill"/>
+                                                    </Border>
+                                                    <Image x:Name="IconFrame" Width="90" Height="90" Stretch="Uniform" Visibility="Collapsed"/>
+                                                    <ToolTipService.ToolTip>
+                                                        <ToolTip Padding="6">
+                                                            <StackPanel Spacing="3">
+                                                                 <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="18"/>
+                                                                 <TextBlock Text="{Binding Description}" FontStyle="Italic" FontSize="14" TextWrapping="Wrap" MaxWidth="300"/>
+                                                                 <TextBlock Text="{Binding Points}" FontSize="14"/>
+                                                                 <TextBlock Text="{Binding DateEarnedText}" FontSize="12" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
+                                                            </StackPanel>
+                                                        </ToolTip>
+                                                    </ToolTipService.ToolTip>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </GridView.ItemTemplate>
+                                    </GridView>
+                                </StackPanel>
+
+                                <StackPanel x:Name="RecentGamesSection" Margin="0,10,0,0">
+                                    <TextBlock x:Name="RecentGamesTitle" Text="Recently Played Games" FontSize="22" FontWeight="Semibold" Margin="0,0,0,5"/>
+                                    <GridView x:Name="RecentGamesGridView" Height="200"
+                                              ScrollViewer.HorizontalScrollMode="Disabled"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                              ScrollViewer.VerticalScrollMode="Disabled"
+                                              ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                              IsItemClickEnabled="True"
+                                              ItemClick="RecentGamesGridView_ItemClick"
+                                              ContainerContentChanging="OnContainerContentChanging">
+                                        <GridView.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="8"/>
+                                            </ItemsPanelTemplate>
+                                        </GridView.ItemsPanel>
+                                        <GridView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Width="90" Height="90" Margin="5">
+                                                    <Border x:Name="IconBorder" Width="90" Height="90" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                        <Image x:Name="IconImage" Stretch="UniformToFill"/>
+                                                    </Border>
+                                                    <Image x:Name="IconFrame" Width="90" Height="90" Stretch="Uniform" Visibility="Collapsed"/>
+                                                    <ToolTipService.ToolTip>
+                                                        <ToolTip Padding="6">
+                                                            <StackPanel Spacing="3">
+                                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="18"/>
+                                                                 <TextBlock Text="{Binding ConsoleName}" FontSize="14" FontStyle="Italic" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
+                                                                 <TextBlock Text="{Binding AchievementProgress}" FontSize="14"/>
+                                                                <ProgressBar Value="{Binding NumAchieved}" Maximum="{Binding NumPossibleAchievements}" Height="6" CornerRadius="2"/>
+                                                            </StackPanel>
+                                                        </ToolTip>
+                                                    </ToolTipService.ToolTip>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </GridView.ItemTemplate>
+                                    </GridView>
+                                </StackPanel>
+                                
+                                <Button x:Name="ViewAllGamesButton" Content="View All Games" HorizontalAlignment="Center" Width="200" Height="40" Margin="0,15,0,0" Click="ViewAllGames_Click" Background="{ThemeResource SystemControlHighlightAccentBrush}" Foreground="White" FontWeight="Bold" CornerRadius="5"/>
+                            </StackPanel>
+                        </Viewbox>
+                    </PivotItem>
+
+                    <PivotItem x:Name="WantToPlayTab" Header="Want to Play">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel Orientation="Vertical" Padding="10">
+                                <Border Background="{ThemeResource SectionBackgroundBrush}" 
+                                        BorderThickness="{ThemeResource SectionBorderThickness}" 
+                                        BorderBrush="{ThemeResource SectionBorderBrush}" 
+                                        CornerRadius="{ThemeResource SectionCornerRadius}" 
+                                        Margin="0,0,0,5">
+                                    <Border BorderBrush="{ThemeResource SegaSectionWhiteBrush}" 
+                                            BorderThickness="{ThemeResource SegaSectionWhiteThickness}" 
+                                            CornerRadius="{ThemeResource SegaSectionWhiteCornerRadius}">
+                                        <Border BorderBrush="{ThemeResource SegaSectionInnerBlueBrush}" 
+                                                BorderThickness="{ThemeResource SegaSectionInnerBlueThickness}" 
+                                                CornerRadius="{ThemeResource SegaSectionInnerBlueCornerRadius}"
+                                                Padding="8">
+                                            <StackPanel>
+                                                <TextBlock x:Name="WantToPlayTitle" Text="Want to Play" FontSize="24" FontWeight="Semibold" Margin="0,0,0,5"/>
+                                        <GridView x:Name="WantToPlayGridView" SelectionMode="None" IsItemClickEnabled="True" ItemClick="WantToPlayGridView_ItemClick"
+                                                  ContainerContentChanging="OnContainerContentChanging">
+                                            <GridView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Width="100" Height="100" Margin="10">
+                                                        <Border x:Name="IconBorder" Width="100" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <Image x:Name="IconImage" Stretch="UniformToFill"/>
+                                                        </Border>
+                                                        <Image x:Name="IconFrame" Width="100" Height="100" Stretch="Uniform" Visibility="Collapsed"/>
+                                                        <ToolTipService.ToolTip>
+                                                            <ToolTip Padding="6">
+                                                                <StackPanel Spacing="3">
+                                                                    <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="18"/>
+                                                                     <TextBlock Text="{Binding ConsoleName}" FontSize="14" FontStyle="Italic" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
+                                                                    <!-- Want to play list usually just has Title and maybe some console info, but we'll try to show what we can based on GameItem -->
+                                                                </StackPanel>
+                                                            </ToolTip>
+                                                        </ToolTipService.ToolTip>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </GridView.ItemTemplate>
+                                        </GridView>
+                                            </StackPanel>
+                                        </Border>
+                                    </Border>
+                                </Border>
                             </StackPanel>
                         </ScrollViewer>
                     </PivotItem>
-                    
 
-                    <PivotItem Header="Want to Play">
+                    <PivotItem x:Name="SettingsTab" Header="Settings">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel Orientation="Vertical" Padding="20">
-                                <TextBlock Text="Want to Play" FontSize="28" FontWeight="Semibold" Margin="0,0,0,20"/>
-                                <GridView x:Name="WantToPlayGridView" SelectionMode="None" IsItemClickEnabled="True" ItemClick="WantToPlayGridView_ItemClick"
-                                          ContainerContentChanging="OnContainerContentChanging">
-                                    <GridView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Image Source="{Binding ImageUrl}" Width="100" Height="100" Margin="10" Stretch="UniformToFill">
-                                                <ToolTipService.ToolTip>
-                                                    <ToolTip Padding="6">
-                                                        <StackPanel Spacing="3">
-                                                            <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="18"/>
-                                                             <TextBlock Text="{Binding ConsoleName}" FontSize="14" FontStyle="Italic" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
-                                                            <!-- Want to play list usually just has Title and maybe some console info, but we'll try to show what we can based on GameItem -->
-                                                        </StackPanel>
-                                                    </ToolTip>
-                                                </ToolTipService.ToolTip>
-                                            </Image>
-                                        </DataTemplate>
-                                    </GridView.ItemTemplate>
-                                </GridView>
-                            </StackPanel>
-                        </ScrollViewer>
-                    </PivotItem>
-
-                    <PivotItem Header="Settings">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Orientation="Vertical" Padding="20">
-                                <TextBlock Text="Settings" FontSize="28" FontWeight="Semibold" Margin="0,0,0,20"/>
+                                <TextBlock x:Name="SettingsTitle" Text="Settings" FontSize="28" FontWeight="Semibold" Margin="0,0,0,20"/>
                                 <StackPanel Orientation="Vertical" Spacing="20">
+                                    <Button x:Name="NavigatePointsShopButton" Content="Open Points Shop" Width="300" Height="50" FontSize="16" Click="NavigatePointsShop_Click" CornerRadius="4" FontWeight="Bold" Background="{ThemeResource SystemControlHighlightAccentBrush}" Foreground="White"/>
                                     <ToggleSwitch x:Name="HardcoreModeToggle" Header="Display Hardcore Mode Stats" Toggled="HardcoreModeToggle_Toggled"/>
 
                                     <StackPanel Orientation="Vertical" Spacing="10">
                                         <TextBlock Text="Theme" FontSize="24" FontWeight="Semibold" Margin="0,10,0,0"/>
                                         <TextBlock Text="Requires app restart to fully take effect." FontSize="14" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" Margin="0,0,0,10"/>
 
-                                        <ToggleSwitch x:Name="BackgroundThemeToggle" Header="Use Light Background" Toggled="BackgroundThemeToggle_Toggled" Margin="0,0,0,10"/>
+                                        <ComboBox x:Name="ThemeSelector" Header="App Theme" SelectionChanged="ThemeSelector_SelectionChanged" Width="300" Margin="0,0,0,10">
+                                            <ComboBoxItem Content="System Default"/>
+                                            <ComboBoxItem Content="Light"/>
+                                            <ComboBoxItem Content="Dark (Gray)"/>
+                                            <ComboBoxItem Content="AMOLED (Black)"/>
+                                            <ComboBoxItem Content="Steamed" Visibility="Collapsed"/>
+                                            <ComboBoxItem Content="Arcade Hero" Visibility="Collapsed"/>
+                                            <ComboBoxItem Content="Retroflix" Visibility="Collapsed"/>
+                                            <ComboBoxItem Content="Retro Boy" Visibility="Collapsed"/>
+                                            <ComboBoxItem Content="Hedgehog" Visibility="Collapsed"/>
+                                            <ComboBoxItem Content="RetroStation" Visibility="Collapsed"/>
+                                            <ComboBoxItem Content="Blade" Visibility="Collapsed"/>
+                                            <ComboBoxItem Content="Custom" Visibility="Collapsed"/>
+                                        </ComboBox>
 
                                         <TextBlock Text="Choose Accent Color" FontSize="18" FontWeight="Semibold" Margin="0,5,0,0"/>
                                         <GridView x:Name="AccentColorGridView" 
@@ -181,8 +321,23 @@
                                             </GridView.ItemTemplate>
                                         </GridView>
 
+                                        <TextBlock x:Name="AccentColorUnavailableText" 
+                                                   Text="Accent color unavailable for this theme." 
+                                                   Visibility="Collapsed" 
+                                                   FontSize="16" 
+                                                   Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+                                                   Margin="0,0,0,15"/>
+
                                         <Button x:Name="ChooseBackgroundButton" Content="Choose Background Image" Width="300" Height="50" FontSize="16" Click="ChooseBackgroundImage_Click" CornerRadius="4" FontWeight="Semibold" Margin="0,5,0,0"/>
                                         <Button x:Name="ClearBackgroundButton" Content="Clear Background Image" Width="300" Height="50" FontSize="16" Click="ClearBackgroundImage_Click" CornerRadius="4" FontWeight="Semibold" Margin="0,5,0,0"/>
+                                        <Button x:Name="ChooseFontButton" Content="Change Custom Font" Width="300" Height="50" FontSize="16" Click="ChooseFontButton_Click" CornerRadius="4" FontWeight="Semibold" Margin="0,5,0,0" Visibility="Collapsed"/>
+                                        <Button x:Name="ClearFontButton" Content="Clear Custom Font" Width="300" Height="50" FontSize="16" Click="ClearFontButton_Click" CornerRadius="4" FontWeight="Semibold" Margin="0,5,0,0" Visibility="Collapsed"/>
+                                        
+                                        <ComboBox x:Name="CustomTabStyleSelector" Header="Tab Style" Width="300" Margin="0,15,0,0" SelectionChanged="CustomTabStyleSelector_SelectionChanged" Visibility="Collapsed">
+                                            <ComboBoxItem Content="Regular Tabs"/>
+                                            <ComboBoxItem Content="Icon Tabs"/>
+                                            <ComboBoxItem Content="Blade Tabs"/>
+                                        </ComboBox>
                                     </StackPanel>
 
                                     <TextBlock Text="Account" FontSize="24" FontWeight="Semibold" Margin="0,10,0,10"/>
@@ -192,6 +347,54 @@
                         </ScrollViewer>
                     </PivotItem>
                 </Pivot>
+            </Grid>
+        </Viewbox>
+        
+        <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <Grid Width="1120" Height="800">
+                <!-- Blade UI Overlay (Back in the main Viewbox, but using Paths to avoid transparency bugs) -->
+                <Grid x:Name="BladeUIOverlay" Grid.Row="1" Visibility="Collapsed" Margin="-20,0,-20,0" Canvas.ZIndex="100">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left Stack -->
+                    <StackPanel x:Name="BladeLeftStack" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
+                        <Grid x:Name="Blade0" Width="45" Background="Transparent" PointerPressed="Blade_PointerPressed" Tag="0" Margin="0,0,-15,0">
+                            <Path x:Name="Blade0Graphic" Fill="Black" Stroke="#52B043" StrokeThickness="2" Margin="0,180,0,30" Stretch="Fill"
+                                  Data="M 45,0 H 20 Q 0,0 0,20 V 480 Q 0,500 20,500 H 45 Z"/>
+                            <TextBlock x:Name="Blade0Text" Text="ACHIEVEMENTS" Foreground="#52B043" FontSize="16" FontWeight="Bold" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-200,0,-200,0">
+                                <TextBlock.RenderTransform>
+                                    <RotateTransform Angle="-90"/>
+                                </TextBlock.RenderTransform>
+                            </TextBlock>
+                        </Grid>
+                        <Grid x:Name="Blade1" Width="45" Background="Transparent" PointerPressed="Blade_PointerPressed" Tag="1" Margin="0,0,-15,0">
+                            <Path x:Name="Blade1Graphic" Fill="Black" Stroke="#52B043" StrokeThickness="2" Margin="0,180,0,30" Stretch="Fill"
+                                  Data="M 45,0 H 20 Q 0,0 0,20 V 480 Q 0,500 20,500 H 45 Z"/>
+                            <TextBlock x:Name="Blade1Text" Text="WANT TO PLAY" Foreground="#52B043" FontSize="16" FontWeight="Bold" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-200,0,-200,0">
+                                <TextBlock.RenderTransform>
+                                    <RotateTransform Angle="-90"/>
+                                </TextBlock.RenderTransform>
+                            </TextBlock>
+                        </Grid>
+                        <Grid x:Name="Blade2" Width="45" Background="Transparent" PointerPressed="Blade_PointerPressed" Tag="2" Margin="0,0,-15,0">
+                            <Path x:Name="Blade2Graphic" Fill="Black" Stroke="#52B043" StrokeThickness="2" Margin="0,180,0,30" Stretch="Fill"
+                                  Data="M 45,0 H 20 Q 0,0 0,20 V 480 Q 0,500 20,500 H 45 Z"/>
+                            <TextBlock x:Name="Blade2Text" Text="SETTINGS" Foreground="#52B043" FontSize="16" FontWeight="Bold" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-200,0,-200,0">
+                                <TextBlock.RenderTransform>
+                                    <RotateTransform Angle="-90"/>
+                                </TextBlock.RenderTransform>
+                            </TextBlock>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Right Stack -->
+                    <StackPanel x:Name="BladeRightStack" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                    </StackPanel>
+                </Grid>
             </Grid>
         </Viewbox>
     </Grid>

@@ -19,34 +19,78 @@
                 </Grid.RowDefinitions>
 
                 <!-- Profile Information Section with Image (Sticky Header) -->
-                <Grid Grid.Row="0" Margin="10,0,20,0">
-                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Spacing="20">
-                        <Button x:Name="BackButton" Content="Back" Click="BackButton_Click" Height="84" VerticalAlignment="Top" CornerRadius="4" FontWeight="Semibold"/>
-                        <!-- User Profile Image -->
-                        <Image x:Name="UserProfileImage" Width="84" Height="84" Stretch="UniformToFill"/>
+                <Grid Grid.Row="0" Margin="20,10,20,10">
+                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Orientation="Horizontal" Spacing="25">
+                        <Button x:Name="BackButton" Content="Back" Click="BackButton_Click" Height="100" VerticalAlignment="Center" CornerRadius="4" FontWeight="Semibold"/>
+                        <!-- User Profile Image (Circular) -->
+                        <Grid Width="120" Height="120">
+                            <Border x:Name="AvatarBorder" Width="100" Height="100" CornerRadius="50" BorderThickness="3" BorderBrush="{ThemeResource SystemControlHighlightAccentBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Border.Background>
+                                    <ImageBrush x:Name="ProfileImageBrush" Stretch="UniformToFill"/>
+                                </Border.Background>
+                            </Border>
+                            <Image x:Name="AvatarFrameImage" Width="120" Height="120" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Grid>
 
                         <!-- Profile Text Information -->
-                        <StackPanel Orientation="Vertical" Spacing="4">
-                            <TextBlock Text="User Profile" FontSize="20" FontWeight="Semibold"/>
-                            <TextBlock x:Name="UserTextBlock" FontSize="11"/>
-                            <TextBlock x:Name="MemberSinceTextBlock" FontSize="11"/>
-                            <TextBlock x:Name="MottoTextBlock" FontSize="11"/>
-                            <TextBlock x:Name="TotalPointsTextBlock" FontSize="11"/>
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                             <TextBlock x:Name="UserTextBlock" FontSize="32" FontWeight="Bold" Margin="0,0,0,-5"/>
+                             
+                             <StackPanel Orientation="Horizontal" Spacing="15">
+                                 <StackPanel>
+                                     <TextBlock Text="MEMBER SINCE" FontSize="9" FontWeight="Bold" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" Opacity="0.8"/>
+                                     <TextBlock x:Name="MemberSinceTextBlock" FontSize="13" FontWeight="SemiBold"/>
+                                 </StackPanel>
+                                 <Rectangle Width="1" Height="25" Fill="{ThemeResource SystemControlForegroundChromeDisabledLowBrush}" VerticalAlignment="Center"/>
+                                 <StackPanel>
+                                     <TextBlock x:Name="TotalPointsLabel" Text="TOTAL POINTS" FontSize="9" FontWeight="Bold" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" Opacity="0.8"/>
+                                     <TextBlock x:Name="TotalPointsTextBlock" FontSize="13" FontWeight="SemiBold"/>
+                                 </StackPanel>
+                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
 
                     <!-- App Title Text -->
                     <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <TextBlock x:Name="AppTitleTextBlock" Text="RetroAchievements" 
-                                   FontSize="28" 
-                                   FontWeight="Bold" 
-                                   HorizontalAlignment="Right"/>
-                        <TextBlock Text="v1.0.0" 
-                                   FontSize="14" 
-                                   Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
-                                   HorizontalAlignment="Right"/>
+                        <Grid>
+                            <StackPanel x:Name="AppTitleTextStack" HorizontalAlignment="Right">
+                                <TextBlock x:Name="AppTitleTextBlock" Text="RetroAchievements" 
+                                           FontSize="28" 
+                                           FontWeight="Bold" 
+                                           HorizontalAlignment="Right"/>
+                                <TextBlock Text="v1.1.1 UWP" 
+                                           FontSize="14" 
+                                           Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+                                           HorizontalAlignment="Right"/>
+                            </StackPanel>
+                            <Image x:Name="NetflixLogoImage" 
+                                   Source="ms-appx:///Assets/Theme/Netflix/ico.png" 
+                                   Height="120" 
+                                   HorizontalAlignment="Right" 
+                                   Visibility="Collapsed"
+                                   Stretch="Uniform"/>
+                            <Image x:Name="SteamLogoImage" 
+                                   Source="ms-appx:///Assets/Theme/Steam/ico.png" 
+                                   Height="100" 
+                                   HorizontalAlignment="Right" 
+                                   Visibility="Collapsed"
+                                   Stretch="Uniform"/>
+                            <Image x:Name="HedgehogLogoImage" 
+                                   Source="ms-appx:///Assets/Theme/Hedgehog/ico.png" 
+                                   Height="110" 
+                                   HorizontalAlignment="Right" 
+                                   Visibility="Collapsed"
+                                   Stretch="Uniform"/>
+                            <Image x:Name="BladeLogoImage" 
+                                   Source="ms-appx:///Assets/Theme/Blade/ico.png" 
+                                   Height="110" 
+                                   HorizontalAlignment="Right" 
+                                   Visibility="Collapsed"
+                                   Stretch="Uniform"/>
+                        </Grid>
                     </StackPanel>
                 </Grid>
+                <Rectangle Grid.Row="1" Height="2" VerticalAlignment="Top" Fill="{ThemeResource SystemControlHighlightAccentBrush}" Opacity="0.5" Margin="20,10,20,0" Visibility="{ThemeResource HeaderSeparatorVisibility}"/>
 
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,20,0,0">
                     <StackPanel Orientation="Vertical">
@@ -66,37 +110,57 @@
                             <ProgressBar x:Name="AchievementProgressBar" Height="10" CornerRadius="4"/>
                         </StackPanel>
                         
-                        <TextBlock Text="Achievements" FontSize="28" FontWeight="Semibold" Margin="0,30,0,10"/>
-                        
-                        <GridView x:Name="AchievementsGridView" 
-                                  VerticalAlignment="Stretch"
-                                  ScrollViewer.HorizontalScrollMode="Disabled"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                  ScrollViewer.VerticalScrollMode="Enabled"
-                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                  ContainerContentChanging="OnContainerContentChanging">
-                    <GridView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="11"/>
-                        </ItemsPanelTemplate>
-                    </GridView.ItemsPanel>
-                    <GridView.ItemTemplate>
-                        <DataTemplate>
-                            <Image Source="{Binding ImageUrl}" Width="100" Height="100" Margin="10" Stretch="UniformToFill">
-                                <ToolTipService.ToolTip>
-                                    <ToolTip Padding="6">
-                                        <StackPanel Spacing="3">
-                                             <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="18"/>
-                                             <TextBlock Text="{Binding Description}" FontStyle="Italic" FontSize="14" TextWrapping="Wrap" MaxWidth="300"/>
-                                             <TextBlock Text="{Binding Points}" FontSize="14"/>
-                                             <TextBlock Text="{Binding DateEarnedText}" FontSize="12" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
-                                        </StackPanel>
-                                    </ToolTip>
-                                </ToolTipService.ToolTip>
-                            </Image>
-                        </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
+                        <Border Background="{ThemeResource SectionBackgroundBrush}" 
+                                BorderThickness="{ThemeResource SectionBorderThickness}" 
+                                BorderBrush="{ThemeResource SectionBorderBrush}" 
+                                CornerRadius="{ThemeResource SectionCornerRadius}" 
+                                Margin="0,30,0,10">
+                            <Border BorderBrush="{ThemeResource SegaSectionWhiteBrush}" 
+                                    BorderThickness="{ThemeResource SegaSectionWhiteThickness}" 
+                                    CornerRadius="{ThemeResource SegaSectionWhiteCornerRadius}">
+                                <Border BorderBrush="{ThemeResource SegaSectionInnerBlueBrush}" 
+                                        BorderThickness="{ThemeResource SegaSectionInnerBlueThickness}" 
+                                        CornerRadius="{ThemeResource SegaSectionInnerBlueCornerRadius}"
+                                        Padding="15">
+                                    <StackPanel>
+                                <TextBlock x:Name="AchievementsTitleTextBlock" Text="Achievements" FontSize="28" FontWeight="Semibold" Margin="0,0,0,10"/>
+                                <GridView x:Name="AchievementsGridView" 
+                                          VerticalAlignment="Stretch"
+                                          ScrollViewer.HorizontalScrollMode="Disabled"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                          ScrollViewer.VerticalScrollMode="Enabled"
+                                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                          ContainerContentChanging="OnContainerContentChanging">
+                                    <GridView.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="11"/>
+                                        </ItemsPanelTemplate>
+                                    </GridView.ItemsPanel>
+                                    <GridView.ItemTemplate>
+                                        <DataTemplate>
+                                                                                        <Grid Width="100" Height="100" Margin="10">
+                                                <Border x:Name="IconBorder" Width="100" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Image x:Name="IconImage" Stretch="UniformToFill"/>
+                                                </Border>
+                                                <Image x:Name="IconFrame" Width="100" Height="100" Stretch="Uniform" Visibility="Collapsed"/>
+                                                <ToolTipService.ToolTip>
+                                                    <ToolTip Padding="6">
+                                                        <StackPanel Spacing="3">
+                                                             <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="18"/>
+                                                             <TextBlock Text="{Binding Description}" FontStyle="Italic" FontSize="14" TextWrapping="Wrap" MaxWidth="300"/>
+                                                             <TextBlock Text="{Binding Points}" FontSize="14"/>
+                                                             <TextBlock Text="{Binding DateEarnedText}" FontSize="12" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
+                                                        </StackPanel>
+                                                    </ToolTip>
+                                                </ToolTipService.ToolTip>
+                                                                                        </Grid>
+                                        </DataTemplate>
+                                    </GridView.ItemTemplate>
+                                </GridView>
+                                    </StackPanel>
+                                </Border>
+                            </Border>
+                        </Border>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

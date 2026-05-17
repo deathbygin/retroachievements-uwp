@@ -55,7 +55,8 @@ void MainPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^
 	this->RequestedTheme = ThemeSettings::GetElementTheme();
 	ThemeSettings::ApplyThemeToTitle(AppTitleTextBlock);
 	ThemeSettings::ApplyAccentToButton(ConfirmButton);
-	ThemeSettings::ApplyBackground(RootGrid);
+	ThemeSettings::ApplyBackground(this);
+	ThemeSettings::ApplyThemeBorder(RootGrid);
 }
 
 void MainPage::ValidateAndNavigate(Platform::String^ username, Platform::String^ apiKey)

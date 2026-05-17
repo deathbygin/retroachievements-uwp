@@ -18,6 +18,7 @@
     <ClCompile Include="GameInfoPage.xaml.cpp" />
     <ClCompile Include="AllGamesPage.xaml.cpp" />
     <ClCompile Include="LeaderboardPage.xaml.cpp" />
+    <ClCompile Include="PointsShop.xaml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -26,6 +27,7 @@
     <ClInclude Include="AllGamesPage.xaml.h" />
     <ClInclude Include="LeaderboardPage.xaml.h" />
     <ClInclude Include="ThemeSettings.h" />
+    <ClInclude Include="PointsShop.xaml.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
@@ -49,6 +51,129 @@
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="Assets\Avatars\novice.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\amateur.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\pro.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\ring_of_fire.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\ice_ring.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\thorned_rose.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\steampunk.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\cherryblossom.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\colorpicker.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\darkflame.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\crayon.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\collared.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\kanagawa.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\f_brick.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\puffycloud.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\hermaeus.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\ghostly.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\fallingleaves.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\kc_pet.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\cream.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\demonic.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\sketchy.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\royalty.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\b_red.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\b_blue.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\b_green.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\b_silver.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\b_gold.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Avatars\template.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Theme\ArcadeHero\bg.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Theme\ArcadeHero\ico.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Theme\Netflix\bg.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Theme\Netflix\ico.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Theme\Steam\bg.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Theme\Steam\ico.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Theme\RetroBoy\bg.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Theme\RetroBoy\ico.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Theme\Hedgehog\bg.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Theme\Hedgehog\ico.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Theme\Hedgehog\ring.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Theme\Custom\ico.png">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
@@ -59,6 +184,7 @@
     <Page Include="GameInfoPage.xaml" />
     <Page Include="AllGamesPage.xaml" />
     <Page Include="LeaderboardPage.xaml" />
+    <Page Include="PointsShop.xaml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="RetroAchievementsClientExample.js" />
@@ -66,5 +192,8 @@
     <None Include="node\ra-client.mjs" />
     <None Include="node\README.md" />
     <None Include="RetroAchievements-UWP_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Assets\Fonts\Silkscreen.ttf" />
   </ItemGroup>
 </Project>

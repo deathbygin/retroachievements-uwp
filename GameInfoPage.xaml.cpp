@@ -54,10 +54,25 @@ void GameInfoPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventA
 
     if (headerData != nullptr)
     {
-        UserProfileImage->Source = headerData->ProfileImage;
+        ProfileImageBrush->ImageSource = headerData->ProfileImage;
         UserTextBlock->Text = headerData->Username;
         MemberSinceTextBlock->Text = headerData->MemberSince;
         TotalPointsTextBlock->Text = headerData->TotalPoints;
+
+        // Load active avatar frame
+        auto settings = Windows::Storage::ApplicationData::Current->LocalSettings->Values;
+        if (settings->HasKey("ActiveAvatarFrame"))
+        {
+            auto activeFrameUrl = dynamic_cast<Platform::String^>(settings->Lookup("ActiveAvatarFrame"));
+            if (activeFrameUrl != nullptr)
+            {
+                AvatarFrameImage->Source = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(ref new Windows::Foundation::Uri(activeFrameUrl));
+            }
+        }
+        else
+        {
+            AvatarFrameImage->Source = nullptr;
+        }
     }
 
     ThemeSettings::ApplyAccentToResources(this->Resources);
@@ -66,7 +81,41 @@ void GameInfoPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventA
     ThemeSettings::ApplyThemeToBackButton(BackButton);
     ThemeSettings::ApplyAccentToButton(LeaderboardButton);
     ThemeSettings::ApplyAccentToProgressBar(AchievementProgressBar);
-    ThemeSettings::ApplyBackground(RootGrid);
+    ThemeSettings::ApplyBackground(this);
+    ThemeSettings::ApplyThemeBorder(RootGrid);
+
+    // Apply theme-specific logos and labels
+    int currentTheme = ThemeSettings::GetAppTheme();
+    bool isNetflix = (currentTheme == 6);
+    bool isSteam = (currentTheme == 4);
+    bool isHedgehog = (currentTheme == 8);
+    bool isRetroStation = (currentTheme == 9);
+    bool isBlade = (currentTheme == 10);
+
+    if (NetflixLogoImage != nullptr) NetflixLogoImage->Visibility = isNetflix ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+    if (SteamLogoImage != nullptr) SteamLogoImage->Visibility = isSteam ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+    if (HedgehogLogoImage != nullptr) {
+        if (isHedgehog) {
+            HedgehogLogoImage->Source = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(ref new Windows::Foundation::Uri("ms-appx:///Assets/Theme/Hedgehog/ico.png"));
+            HedgehogLogoImage->Visibility = Windows::UI::Xaml::Visibility::Visible;
+        } else if (isRetroStation) {
+            HedgehogLogoImage->Source = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(ref new Windows::Foundation::Uri("ms-appx:///Assets/Theme/RetroStation/ico.png"));
+            HedgehogLogoImage->Visibility = Windows::UI::Xaml::Visibility::Visible;
+        } else {
+            HedgehogLogoImage->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+        }
+    }
+    if (BladeLogoImage != nullptr) BladeLogoImage->Visibility = isBlade ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+
+    if (TotalPointsLabel != nullptr) TotalPointsLabel->Text = isHedgehog ? "TOTAL RINGS" : (isBlade ? "GAMERSCORE" : "TOTAL POINTS");
+
+    ThemeSettings::ApplyThemeFontToTitle(GameTitleTextBlock);
+    ThemeSettings::ApplyThemeFontToTitle(AchievementsTitleTextBlock);
+
+    if (AppTitleTextStack != nullptr)
+    {
+        AppTitleTextStack->Visibility = (isNetflix || isSteam || isHedgehog || isRetroStation || isBlade) ? Windows::UI::Xaml::Visibility::Collapsed : Windows::UI::Xaml::Visibility::Visible;
+    }
 
     BackButton->Focus(Windows::UI::Xaml::FocusState::Programmatic);
 }
@@ -290,7 +339,7 @@ void GameInfoPage::FetchGameProgress(Platform::String^ gameId)
                                 badge->ImageUrl = ref new Platform::String((L"https://retroachievements.org/Badge/" + badgeName + suffix + L".png").c_str());
                                 badge->Title = ref new Platform::String(title.c_str());
                                 badge->Description = ref new Platform::String(desc.c_str());
-                                badge->Points = ref new Platform::String((points + L" Points").c_str());
+                                badge->Points = ref new Platform::String((points + ThemeSettings::GetPointsSuffix()->Data()).c_str());
                                 badge->DateEarnedText = ref new Platform::String(displayDate.c_str());
 
                                 badges.push_back(badge);
@@ -324,9 +373,8 @@ void GameInfoPage::FetchGameProgress(Platform::String^ gameId)
 
                         if (!imageIcon.empty())
                         {
-                            auto uri = ref new Windows::Foundation::Uri(
-                                ref new Platform::String((L"https://retroachievements.org" + imageIcon).c_str()));
-                            GameIconImage->Source = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(uri);
+                            auto url = ref new Platform::String((L"https://retroachievements.org" + imageIcon).c_str());
+                            ThemeSettings::SetImageWithRetroBoyEffect(GameIconImage, url);
                         }
 
                         auto items = AchievementsGridView->Items;
@@ -367,7 +415,6 @@ void GameInfoPage::Page_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Inp
         }
     }
 }
-
 void GameInfoPage::OnContainerContentChanging(ListViewBase^ sender, ContainerContentChangingEventArgs^ args)
 {
     if (!args->InRecycleQueue)
@@ -377,6 +424,67 @@ void GameInfoPage::OnContainerContentChanging(ListViewBase^ sender, ContainerCon
         {
             container->GotFocus += ref new RoutedEventHandler(this, &GameInfoPage::Item_GotFocus);
             container->LostFocus += ref new RoutedEventHandler(this, &GameInfoPage::Item_LostFocus);
+
+            // Apply theme-appropriate image processing
+            auto badge = dynamic_cast<AchievementBadge^>(args->Item);
+            if (badge != nullptr && badge->ImageUrl != nullptr)
+            {
+                std::function<void(DependencyObject^)> findAndApply = [&](DependencyObject^ parent)
+                {
+                    int count = Windows::UI::Xaml::Media::VisualTreeHelper::GetChildrenCount(parent);
+                    for (int i = 0; i < count; i++)
+                    {
+                        auto child = Windows::UI::Xaml::Media::VisualTreeHelper::GetChild(parent, i);
+                        
+                        auto img = dynamic_cast<Windows::UI::Xaml::Controls::Image^>(child);
+                        auto border = dynamic_cast<Windows::UI::Xaml::Controls::Border^>(child);
+
+                        if (img != nullptr)
+                        {
+                            if (img->Name == "IconImage")
+                            {
+                                ThemeSettings::SetImageWithRetroBoyEffect(img, badge->ImageUrl);
+                            }
+                            else if (img->Name == "IconFrame")
+                            {
+                                if (ThemeSettings::GetAppTheme() == 8) // Hedgehog
+                                {
+                                    img->Source = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(ref new Windows::Foundation::Uri("ms-appx:///Assets/Theme/Hedgehog/ring.png"));
+                                    img->Visibility = Windows::UI::Xaml::Visibility::Visible;
+                                }
+                                else
+                                {
+                                    img->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+                                }
+                            }
+                        }
+                        else if (border != nullptr)
+                        {
+                            if (border->Name == "IconBorder")
+                            {
+                                if (ThemeSettings::GetAppTheme() == 8) // Hedgehog
+                                {
+                                    border->Width = 75;
+                                    border->Height = 75;
+                                    border->CornerRadius = Windows::UI::Xaml::CornerRadius(37.5);
+                                }
+                                else
+                                {
+                                    border->Width = 100;
+                                    border->Height = 100;
+                                    border->CornerRadius = Windows::UI::Xaml::CornerRadius(0);
+                                }
+                            }
+                            findAndApply(border);
+                        }
+                        else
+                        {
+                            findAndApply(child);
+                        }
+                    }
+                };
+                findAndApply(container);
+            }
         }
     }
 }

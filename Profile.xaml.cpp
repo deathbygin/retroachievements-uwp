@@ -7,6 +7,7 @@
 #include "MainPage.xaml.h"
 #include "GameInfoPage.xaml.h"
 #include "AllGamesPage.xaml.h"
+#include "PointsShop.xaml.h"
 #include <ppltasks.h>
 #include <string>
 #include <sstream>
@@ -56,7 +57,22 @@ void Profile::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ 
     }
 
     // Load theme setting
-    BackgroundThemeToggle->IsOn = ThemeSettings::GetIsLightTheme();
+    ThemeSelector->SelectedIndex = ThemeSettings::GetAppTheme();
+
+    // Load active avatar frame
+    auto settings = ApplicationData::Current->LocalSettings->Values;
+    if (settings->HasKey("ActiveAvatarFrame"))
+    {
+        auto activeFrameUrl = dynamic_cast<Platform::String^>(settings->Lookup("ActiveAvatarFrame"));
+        if (activeFrameUrl != nullptr)
+        {
+            AvatarFrameImage->Source = ref new BitmapImage(ref new Uri(activeFrameUrl));
+        }
+    }
+    else
+    {
+        AvatarFrameImage->Source = nullptr;
+    }
     
     ApplyThemeSettings();
 
@@ -184,17 +200,77 @@ void Profile::FetchUserProfile()
 
                     auto dispatcher = this->Dispatcher;
                     dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this, username, memberSince, motto, totalPoints, userPic]() {
-                        UserTextBlock->Text = ref new Platform::String(L"User: ") + ref new Platform::String(username.c_str());
-                        MemberSinceTextBlock->Text = ref new Platform::String(L"Member Since: ") + ref new Platform::String(memberSince.c_str());
-                        MottoTextBlock->Text = ref new Platform::String(L"Motto: ") + ref new Platform::String(motto.c_str());
-                        TotalPointsTextBlock->Text = ref new Platform::String(L"Total Points: ") + ref new Platform::String(totalPoints.c_str());
+                        UserTextBlock->Text = ref new Platform::String(username.c_str());
+                        MemberSinceTextBlock->Text = ref new Platform::String(memberSince.c_str());
+                        MottoTextBlock->Text = ref new Platform::String(motto.c_str());
+                        TotalPointsTextBlock->Text = ref new Platform::String(totalPoints.c_str());
 
                         if (!userPic.empty())
                         {
                             std::wstring imageUrl = L"https://retroachievements.org" + userPic;
-                            auto uri = ref new Windows::Foundation::Uri(ref new Platform::String(imageUrl.c_str()));
-                            UserProfileImage->Source = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(uri);
+                            auto url = ref new Platform::String(imageUrl.c_str());
+                            this->UserPicUrl = url;
+                            ProfileImageBrush->ImageSource = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(ref new Windows::Foundation::Uri(url));
                         }
+
+                        // Handle Arcade Hero Theme visibility based on points (250 threshold)
+                        try {
+                            int points = _wtoi(totalPoints.c_str());
+                            auto arcadeHeroItem = dynamic_cast<Windows::UI::Xaml::Controls::ComboBoxItem^>(ThemeSelector->Items->GetAt(5));
+                            if (arcadeHeroItem != nullptr)
+                            {
+                                arcadeHeroItem->Visibility = (points >= 250) ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+                            }
+
+                            // Handle Steam Theme visibility based on points (500 threshold)
+                            auto steamItem = dynamic_cast<Windows::UI::Xaml::Controls::ComboBoxItem^>(ThemeSelector->Items->GetAt(4));
+                            if (steamItem != nullptr)
+                            {
+                                steamItem->Visibility = (points >= 500) ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+                            }
+
+                            // Handle Netflix Theme visibility based on points (800 threshold)
+                            auto netflixItem = dynamic_cast<Windows::UI::Xaml::Controls::ComboBoxItem^>(ThemeSelector->Items->GetAt(6));
+                            if (netflixItem != nullptr)
+                            {
+                                netflixItem->Visibility = (points >= 800) ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+                            }
+
+                            // Handle Retro Boy Theme visibility based on points (1100 threshold)
+                            auto retroBoyItem = dynamic_cast<Windows::UI::Xaml::Controls::ComboBoxItem^>(ThemeSelector->Items->GetAt(7));
+                            if (retroBoyItem != nullptr)
+                            {
+                                retroBoyItem->Visibility = (points >= 1100) ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+                            }
+
+                            // Handle Hedgehog Theme visibility based on points (1500 threshold)
+                            auto hedgehogItem = dynamic_cast<Windows::UI::Xaml::Controls::ComboBoxItem^>(ThemeSelector->Items->GetAt(8));
+                            if (hedgehogItem != nullptr)
+                            {
+                                hedgehogItem->Visibility = (points >= 1500) ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+                            }
+
+                            // Handle RetroStation Theme visibility based on points (1900 threshold)
+                            auto retroStationItem = dynamic_cast<Windows::UI::Xaml::Controls::ComboBoxItem^>(ThemeSelector->Items->GetAt(9));
+                            if (retroStationItem != nullptr)
+                            {
+                                retroStationItem->Visibility = (points >= 1900) ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+                            }
+
+                            // Handle Blade Theme visibility based on points (2400 threshold)
+                            auto bladeItem = dynamic_cast<Windows::UI::Xaml::Controls::ComboBoxItem^>(ThemeSelector->Items->GetAt(10));
+                            if (bladeItem != nullptr)
+                            {
+                                bladeItem->Visibility = (points >= 2400) ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+                            }
+
+                            // Handle Custom Theme visibility based on points (3000 threshold)
+                            auto customItem = dynamic_cast<Windows::UI::Xaml::Controls::ComboBoxItem^>(ThemeSelector->Items->GetAt(11));
+                            if (customItem != nullptr)
+                            {
+                                customItem->Visibility = (points >= 3000) ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+                            }
+                        } catch (...) {}
                     }));
                 });
             }
@@ -374,7 +450,7 @@ void Profile::FetchRecentAchievements()
                             item->Description = ref new Platform::String(description.c_str());
                             item->GameTitle = ref new Platform::String(gameTitle.c_str());
                             item->GameID = ref new Platform::String(gameId.c_str());
-                            item->Points = ref new Platform::String((points + L" Points").c_str());
+                            item->Points = ref new Platform::String((points + ThemeSettings::GetPointsSuffix()->Data()).c_str());
                             item->DateEarnedText = ref new Platform::String((L"Date Earned: " + date).c_str());
                             itemsList.push_back(item);
                         }
@@ -619,18 +695,24 @@ void Profile::FetchRecentlyPlayedGames()
 
 UserProfileHeaderData^ Profile::GetProfileHeaderData()
 {
-    UserProfileHeaderData^ headerData = ref new UserProfileHeaderData();
-    headerData->ProfileImage = UserProfileImage->Source;
-    headerData->Username = UserTextBlock->Text;
-    headerData->MemberSince = MemberSinceTextBlock->Text;
-    headerData->Motto = MottoTextBlock->Text;
-    headerData->TotalPoints = TotalPointsTextBlock->Text;
-    return headerData;
+    UserProfileHeaderData^ header = ref new UserProfileHeaderData();
+    header->ProfileImage = ProfileImageBrush->ImageSource;
+    header->ProfileImageUrl = this->UserPicUrl;
+    header->Username = UserTextBlock->Text;
+    header->MemberSince = MemberSinceTextBlock->Text;
+    header->Motto = MottoTextBlock->Text;
+    header->TotalPoints = TotalPointsTextBlock->Text;
+    return header;
 }
 
 void Profile::ViewAllGames_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
     this->Frame->Navigate(Windows::UI::Xaml::Interop::TypeName(AllGamesPage::typeid), GetProfileHeaderData());
+}
+
+void Profile::NavigatePointsShop_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+    this->Frame->Navigate(Windows::UI::Xaml::Interop::TypeName(PointsShop::typeid), GetProfileHeaderData());
 }
 
 void Profile::RecentGamesGridView_ItemClick(Platform::Object^ sender, Windows::UI::Xaml::Controls::ItemClickEventArgs^ e)
@@ -825,11 +907,17 @@ void Profile::HardcoreModeToggle_Toggled(Platform::Object^ sender, Windows::UI::
     localSettings->Values->Insert("DisplayHardcoreStats", HardcoreModeToggle->IsOn);
 }
 
-void Profile::BackgroundThemeToggle_Toggled(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+void Profile::ThemeSelector_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e)
 {
-    auto localSettings = ApplicationData::Current->LocalSettings;
-    localSettings->Values->Insert("IsLightTheme", BackgroundThemeToggle->IsOn);
-    ApplyThemeSettings();
+    // Prevent restart loop on boot: Only restart if there was a previous selection being removed
+    if (e->RemovedItems->Size == 0) return;
+
+    int selectedIndex = ThemeSelector->SelectedIndex;
+    if (selectedIndex < 0) return;
+
+    auto localSettings = Windows::Storage::ApplicationData::Current->LocalSettings;
+    localSettings->Values->Insert("AppTheme", selectedIndex);
+    ThemeSettings::RestartApp();
 }
 
 void Profile::AccentColorGridView_ItemClick(Platform::Object^ sender, Windows::UI::Xaml::Controls::ItemClickEventArgs^ e)
@@ -838,7 +926,7 @@ void Profile::AccentColorGridView_ItemClick(Platform::Object^ sender, Windows::U
     if (hex != nullptr)
     {
         ThemeSettings::SetAccentColor(hex);
-        ApplyThemeSettings();
+        ThemeSettings::RestartApp();
     }
 }
 
@@ -902,8 +990,60 @@ void Profile::ClearBackgroundImage_Click(Platform::Object^ sender, Windows::UI::
     if (localSettings->Values->HasKey("CustomBackgroundPath"))
     {
         localSettings->Values->Remove("CustomBackgroundPath");
+        ApplyThemeSettings();
     }
-    ApplyThemeSettings();
+}
+
+void Profile::ChooseFontButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+    auto picker = ref new Windows::Storage::Pickers::FileOpenPicker();
+    picker->ViewMode = Windows::Storage::Pickers::PickerViewMode::List;
+    picker->SuggestedStartLocation = Windows::Storage::Pickers::PickerLocationId::DocumentsLibrary;
+    picker->FileTypeFilter->Append(".ttf");
+    picker->FileTypeFilter->Append(".otf");
+
+    create_task(picker->PickSingleFileAsync()).then([this](Windows::Storage::StorageFile^ file)
+    {
+        if (file != nullptr)
+        {
+            auto localFolder = Windows::Storage::ApplicationData::Current->LocalFolder;
+            create_task(file->CopyAsync(localFolder, file->Name, Windows::Storage::NameCollisionOption::ReplaceExisting)).then([this, file](Windows::Storage::StorageFile^ copiedFile)
+            {
+                auto localSettings = Windows::Storage::ApplicationData::Current->LocalSettings;
+                localSettings->Values->Insert("CustomFontPath", file->Name);
+                
+                this->Dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::Normal, ref new Windows::UI::Core::DispatchedHandler([this]() {
+                    ThemeSettings::RestartApp();
+                }));
+            });
+        }
+    });
+}
+
+void Profile::ClearFontButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+    auto localSettings = Windows::Storage::ApplicationData::Current->LocalSettings;
+    if (localSettings->Values->HasKey("CustomFontPath"))
+    {
+        localSettings->Values->Remove("CustomFontPath");
+        ThemeSettings::RestartApp();
+    }
+}
+
+void Profile::CustomTabStyleSelector_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e)
+{
+    if (CustomTabStyleSelector == nullptr || CustomTabStyleSelector->SelectedIndex == -1) return;
+    auto localSettings = Windows::Storage::ApplicationData::Current->LocalSettings;
+    int newStyle = CustomTabStyleSelector->SelectedIndex;
+    
+    if (localSettings->Values->HasKey("CustomTabStyle"))
+    {
+        int oldStyle = safe_cast<int>(localSettings->Values->Lookup("CustomTabStyle"));
+        if (oldStyle == newStyle) return;
+    }
+    
+    localSettings->Values->Insert("CustomTabStyle", newStyle);
+    ThemeSettings::RestartApp();
 }
 
 void Profile::Page_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e)
@@ -942,22 +1082,119 @@ void Profile::ApplyThemeSettings()
     
     auto targetTheme = ThemeSettings::GetElementTheme();
     
-    // Force a re-evaluation of ThemeResources by toggling the theme
-    this->RequestedTheme = (targetTheme == ElementTheme::Light) ? ElementTheme::Dark : ElementTheme::Light;
-    this->RequestedTheme = targetTheme;
+    // Force a re-evaluation of ThemeResources by toggling the theme on the root frame
+    auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Windows::UI::Xaml::Window::Current->Content);
+    if (rootFrame != nullptr)
+    {
+        rootFrame->RequestedTheme = (targetTheme == Windows::UI::Xaml::ElementTheme::Light) ? Windows::UI::Xaml::ElementTheme::Dark : Windows::UI::Xaml::ElementTheme::Light;
+        rootFrame->RequestedTheme = targetTheme;
+    }
 
     ThemeSettings::ApplyThemeToTitle(AppTitleTextBlock);
     ThemeSettings::ApplyAccentToButton(ViewAllGamesButton);
     ThemeSettings::ApplyAccentToButton(ClearCredentialsButton);
     ThemeSettings::ApplyAccentToButton(ChooseBackgroundButton);
     ThemeSettings::ApplyAccentToButton(ClearBackgroundButton);
+    ThemeSettings::ApplyAccentToButton(NavigatePointsShopButton);
 
     // Update background button visibility
     auto localSettings = Windows::Storage::ApplicationData::Current->LocalSettings;
     bool hasBackground = localSettings->Values->HasKey("CustomBackgroundPath");
-    ChooseBackgroundButton->Visibility = hasBackground ? Windows::UI::Xaml::Visibility::Collapsed : Windows::UI::Xaml::Visibility::Visible;
-    ClearBackgroundButton->Visibility = hasBackground ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+    int theme = ThemeSettings::GetAppTheme();
+    bool isRetroStation = (theme == 9);
+
+    if (isRetroStation)
+    {
+        ChooseBackgroundButton->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+        ClearBackgroundButton->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+    }
+    else
+    {
+        ChooseBackgroundButton->Visibility = hasBackground ? Windows::UI::Xaml::Visibility::Collapsed : Windows::UI::Xaml::Visibility::Visible;
+        ClearBackgroundButton->Visibility = hasBackground ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+    }
     
+    bool isCustomTheme = (theme == 11);
+    bool hasCustomFont = localSettings->Values->HasKey("CustomFontPath");
+    if (isCustomTheme)
+    {
+        ChooseFontButton->Visibility = hasCustomFont ? Windows::UI::Xaml::Visibility::Collapsed : Windows::UI::Xaml::Visibility::Visible;
+        ClearFontButton->Visibility = hasCustomFont ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+        
+        if (CustomTabStyleSelector != nullptr)
+        {
+            CustomTabStyleSelector->Visibility = Windows::UI::Xaml::Visibility::Visible;
+            int customTabStyle = 0;
+            if (localSettings->Values->HasKey("CustomTabStyle"))
+            {
+                customTabStyle = safe_cast<int>(localSettings->Values->Lookup("CustomTabStyle"));
+            }
+            CustomTabStyleSelector->SelectedIndex = customTabStyle;
+        }
+    }
+    else
+    {
+        ChooseFontButton->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+        ClearFontButton->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+        if (CustomTabStyleSelector != nullptr)
+        {
+            CustomTabStyleSelector->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+        }
+    }
+    
+    // Update accent color picker visibility
+    bool isLockedAccent = (theme == 4 || theme == 6 || theme == 7 || theme == 8 || theme == 10);
+    if (AccentColorGridView != nullptr)
+    {
+        AccentColorGridView->Visibility = isLockedAccent ? Windows::UI::Xaml::Visibility::Collapsed : Windows::UI::Xaml::Visibility::Visible;
+    }
+    if (AccentColorUnavailableText != nullptr)
+    {
+        AccentColorUnavailableText->Visibility = isLockedAccent ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+    }
+
+    // Update logo visibility (Netflix and Steam)
+    bool isNetflix = (theme == 6);
+    bool isSteam = (theme == 4);
+    bool isRetroBoy = (theme == 7);
+    bool isHedgehog = (theme == 8);
+    bool isBlade = (theme == 10);
+
+    if (NetflixLogoImage != nullptr) NetflixLogoImage->Visibility = isNetflix ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+    if (SteamLogoImage != nullptr) SteamLogoImage->Visibility = isSteam ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+    if (HedgehogLogoImage != nullptr) {
+        if (isHedgehog) {
+            HedgehogLogoImage->Source = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(ref new Windows::Foundation::Uri("ms-appx:///Assets/Theme/Hedgehog/ico.png"));
+            HedgehogLogoImage->Visibility = Windows::UI::Xaml::Visibility::Visible;
+        } else if (isRetroStation) {
+            HedgehogLogoImage->Source = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(ref new Windows::Foundation::Uri("ms-appx:///Assets/Theme/RetroStation/ico.png"));
+            HedgehogLogoImage->Visibility = Windows::UI::Xaml::Visibility::Visible;
+        } else {
+            HedgehogLogoImage->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+        }
+    }
+    if (BladeLogoImage != nullptr) BladeLogoImage->Visibility = isBlade ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+
+    if (TotalPointsLabel != nullptr)
+    {
+        TotalPointsLabel->Text = isHedgehog ? "TOTAL RINGS" : (isBlade ? "GAMERSCORE" : "TOTAL POINTS");
+    }
+
+    if (NavigatePointsShopButton != nullptr)
+    {
+        NavigatePointsShopButton->Content = isHedgehog ? "Open Rings Shop" : (isBlade ? "Open Gamerscore Shop" : "Open Points Shop");
+    }
+    
+    ThemeSettings::ApplyThemeFontToTitle(RecentAchievementsTitle);
+    ThemeSettings::ApplyThemeFontToTitle(RecentGamesTitle);
+    ThemeSettings::ApplyThemeFontToTitle(WantToPlayTitle);
+    ThemeSettings::ApplyThemeFontToTitle(SettingsTitle);
+    
+    if (AppTitleTextStack != nullptr)
+    {
+        AppTitleTextStack->Visibility = (isNetflix || isSteam || isHedgehog || isRetroStation || isBlade) ? Windows::UI::Xaml::Visibility::Collapsed : Windows::UI::Xaml::Visibility::Visible;
+    }
+
     // Refresh color picker highlights
     if (AccentColorGridView != nullptr && AccentColorGridView->ItemsSource != nullptr)
     {
@@ -966,7 +1203,233 @@ void Profile::ApplyThemeSettings()
         AccentColorGridView->ItemsSource = items;
     }
 
-    ThemeSettings::ApplyBackground(RootGrid);
+    ThemeSettings::ApplyBackground(this);
+    ThemeSettings::ApplyThemeBorder(RootGrid);
+
+    // Show tab background bar only for Steam theme (index 4) and use the accent color
+    if (TabBackgroundBar != nullptr)
+    {
+        if (ThemeSettings::GetAppTheme() == 4)
+        {
+            TabBackgroundBar->Visibility = Windows::UI::Xaml::Visibility::Visible;
+            TabBackgroundBar->Fill = ThemeSettings::BrushFromHex(ThemeSettings::GetAccentColor());
+        }
+        else
+        {
+            TabBackgroundBar->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+        }
+    }
+
+    // Update tab icons for RetroStation, hide them for Blade, or restore text for other themes
+    int currentSelectedIndex = ProfilePivot != nullptr ? ProfilePivot->SelectedIndex : 0;
+    UpdateRetroStationTabHeaders(currentSelectedIndex);
+    
+    int customTabStyle = 0;
+    if (ThemeSettings::GetAppTheme() == 11 && localSettings->Values->HasKey("CustomTabStyle")) {
+        customTabStyle = safe_cast<int>(localSettings->Values->Lookup("CustomTabStyle"));
+    }
+    bool showBladeOverlay = isBlade || (ThemeSettings::GetAppTheme() == 11 && customTabStyle == 2);
+    
+    if (BladeUIOverlay != nullptr)
+    {
+        BladeUIOverlay->Visibility = showBladeOverlay ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+        if (showBladeOverlay) UpdateBladePositions(currentSelectedIndex);
+    }
+}
+
+void Profile::UpdateRetroStationTabHeaders(int selectedIndex)
+{
+    if (AchievementsTab == nullptr || WantToPlayTab == nullptr || SettingsTab == nullptr) return;
+
+    Windows::UI::Xaml::Controls::PivotItem^ tabs[] = { AchievementsTab, WantToPlayTab, SettingsTab };
+
+    int theme = ThemeSettings::GetAppTheme();
+    int customTabStyle = 0;
+    if (theme == 11) {
+        auto localSettings = Windows::Storage::ApplicationData::Current->LocalSettings;
+        if (localSettings->Values->HasKey("CustomTabStyle")) {
+            customTabStyle = safe_cast<int>(localSettings->Values->Lookup("CustomTabStyle"));
+        }
+    }
+
+    if (theme == 9 || (theme == 11 && customTabStyle == 1)) // RetroStation or Custom (Icon)
+    {
+        const wchar_t* normal[] = {
+            L"ms-appx:///Assets/Theme/RetroStation/ico1.png",
+            L"ms-appx:///Assets/Theme/RetroStation/ico2.png",
+            L"ms-appx:///Assets/Theme/RetroStation/ico3.png"
+        };
+        const wchar_t* sel[] = {
+            L"ms-appx:///Assets/Theme/RetroStation/ico1_sel.png",
+            L"ms-appx:///Assets/Theme/RetroStation/ico2_sel.png",
+            L"ms-appx:///Assets/Theme/RetroStation/ico3_sel.png"
+        };
+        for (int i = 0; i < 3; i++)
+        {
+            auto img = ref new Windows::UI::Xaml::Controls::Image();
+            img->Width  = 36;
+            img->Height = 36;
+            img->Stretch = Windows::UI::Xaml::Media::Stretch::Uniform;
+            img->Source  = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(
+                ref new Windows::Foundation::Uri(ref new Platform::String(i == selectedIndex ? sel[i] : normal[i])));
+            tabs[i]->Header = img;
+        }
+    }
+    else if (theme == 10 || (theme == 11 && customTabStyle == 2)) // Blade or Custom (Blade)
+    {
+        // Hide headers completely
+        for (int i = 0; i < 3; i++)
+        {
+            auto grid = ref new Windows::UI::Xaml::Controls::Grid();
+            grid->Width = 0;
+            grid->Height = 0;
+            grid->Margin = Windows::UI::Xaml::Thickness(-12, -12, -12, -12); // Negate any default padding
+            tabs[i]->Header = grid;
+        }
+    }
+    else
+    {
+        // Restore text headers
+        tabs[0]->Header = ref new Platform::String(L"Achievements");
+        tabs[1]->Header = ref new Platform::String(L"Want to Play");
+        tabs[2]->Header = ref new Platform::String(L"Settings");
+    }
+}
+
+void Profile::UpdateBladePositions(int selectedIndex)
+{
+    if (BladeLeftStack == nullptr || BladeRightStack == nullptr) return;
+
+    Windows::UI::Xaml::Controls::Grid^ blades[] = { Blade0, Blade1, Blade2 };
+    Windows::UI::Xaml::Shapes::Path^ graphics[] = { Blade0Graphic, Blade1Graphic, Blade2Graphic };
+    Windows::UI::Xaml::Controls::TextBlock^ texts[] = { Blade0Text, Blade1Text, Blade2Text };
+
+    int leftCount = 0;
+    int rightCount = 0;
+    BladeLeftStack->Children->Clear();
+    BladeRightStack->Children->Clear();
+
+    auto solidBlack = ref new Windows::UI::Xaml::Media::SolidColorBrush(Windows::UI::Colors::Black);
+    solidBlack->Opacity = 1.0;
+    
+    // Get the dynamic accent color brush
+    auto accentBrush = ThemeSettings::BrushFromHex(ThemeSettings::GetAccentColor());
+
+    // Left side: Outermost (0) to Innermost (selectedIndex)
+    for (int i = 0; i <= selectedIndex; i++)
+    {
+        if (blades[i] == nullptr) continue;
+        leftCount++;
+        
+        // Force a detach/reattach and visibility toggle to jumpstart the renderer
+        blades[i]->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+        BladeLeftStack->Children->Append(blades[i]);
+        blades[i]->Visibility = Windows::UI::Xaml::Visibility::Visible;
+
+        blades[i]->Opacity = 1.0; // Force full opacity
+        if (graphics[i] != nullptr)
+        {
+            graphics[i]->Fill = solidBlack;
+            graphics[i]->Stroke = accentBrush;
+            graphics[i]->Opacity = 1.0; // Force full opacity
+            auto transform = ref new Windows::UI::Xaml::Media::ScaleTransform();
+            transform->ScaleX = 1;
+            graphics[i]->RenderTransformOrigin = Windows::Foundation::Point(0.5, 0.5);
+            graphics[i]->RenderTransform = transform;
+        }
+        if (texts[i] != nullptr)
+        {
+            texts[i]->Foreground = accentBrush;
+            texts[i]->Opacity = 1.0;
+            auto textTransform = ref new Windows::UI::Xaml::Media::RotateTransform();
+            textTransform->Angle = -90;
+            texts[i]->RenderTransform = textTransform;
+        }
+        blades[i]->Margin = Windows::UI::Xaml::Thickness(0, 0, -15, 0);
+    }
+
+    // Right side: Outermost (2) to Innermost (selectedIndex + 1)
+    for (int i = 2; i > selectedIndex; i--)
+    {
+        if (blades[i] == nullptr) continue;
+        rightCount++;
+        
+        blades[i]->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+        BladeRightStack->Children->InsertAt(0, blades[i]);
+        blades[i]->Visibility = Windows::UI::Xaml::Visibility::Visible;
+
+        blades[i]->Opacity = 1.0; // Force full opacity
+        if (graphics[i] != nullptr)
+        {
+            graphics[i]->Fill = solidBlack;
+            graphics[i]->Stroke = accentBrush;
+            graphics[i]->Opacity = 1.0; // Force full opacity
+            auto transform = ref new Windows::UI::Xaml::Media::ScaleTransform();
+            transform->ScaleX = -1;
+            graphics[i]->RenderTransformOrigin = Windows::Foundation::Point(0.5, 0.5);
+            graphics[i]->RenderTransform = transform;
+        }
+        if (texts[i] != nullptr)
+        {
+            texts[i]->Foreground = accentBrush;
+            texts[i]->Opacity = 1.0;
+            auto textTransform = ref new Windows::UI::Xaml::Media::RotateTransform();
+            textTransform->Angle = 90;
+            texts[i]->RenderTransform = textTransform;
+        }
+        blades[i]->Margin = Windows::UI::Xaml::Thickness(0, 0, -15, 0);
+    }
+
+    // Update the unified content background and Pivot margins to fit between the stacks
+    if (BladeContentBackground != nullptr)
+    {
+        BladeContentBackground->Visibility = Windows::UI::Xaml::Visibility::Visible;
+        BladeContentBackground->BorderBrush = accentBrush;
+        // The stacks are leftCount * 30 + 15 pixels wide. 
+        // We add a little extra padding (20px) to clear the blades.
+        double leftMargin = (leftCount * 30) + 20;
+        double rightMargin = (rightCount * 30) + 20;
+        BladeContentBackground->Margin = Windows::UI::Xaml::Thickness(leftMargin, 60, rightMargin, 30);
+        
+        if (ProfilePivot != nullptr)
+        {
+            // Give the Pivot content the same margins so it sits inside the background box
+            ProfilePivot->Margin = Windows::UI::Xaml::Thickness(leftMargin + 10, 65, rightMargin + 10, 35);
+        }
+    }
+}
+
+void Profile::Blade_PointerPressed(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
+{
+    auto grid = dynamic_cast<Windows::UI::Xaml::Controls::Grid^>(sender);
+    if (grid != nullptr && ProfilePivot != nullptr)
+    {
+        Platform::String^ tagStr = grid->Tag->ToString();
+        ProfilePivot->SelectedIndex = _wtoi(tagStr->Data());
+    }
+}
+
+void Profile::ProfilePivot_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e)
+{
+    if (ProfilePivot == nullptr) return;
+    
+    int theme = ThemeSettings::GetAppTheme();
+    int customTabStyle = 0;
+    if (theme == 11) {
+        auto localSettings = Windows::Storage::ApplicationData::Current->LocalSettings;
+        if (localSettings->Values->HasKey("CustomTabStyle")) {
+            customTabStyle = safe_cast<int>(localSettings->Values->Lookup("CustomTabStyle"));
+        }
+    }
+
+    if (theme == 9 || (theme == 11 && customTabStyle == 1))
+    {
+        UpdateRetroStationTabHeaders(ProfilePivot->SelectedIndex);
+    }
+    else if (theme == 10 || (theme == 11 && customTabStyle == 2))
+    {
+        UpdateBladePositions(ProfilePivot->SelectedIndex);
+    }
 }
 
 void Profile::OnContainerContentChanging(ListViewBase^ sender, ContainerContentChangingEventArgs^ args)
@@ -979,6 +1442,74 @@ void Profile::OnContainerContentChanging(ListViewBase^ sender, ContainerContentC
             // Attach focus handlers to the container (the GridViewItem)
             container->GotFocus += ref new RoutedEventHandler(this, &Profile::Item_GotFocus);
             container->LostFocus += ref new RoutedEventHandler(this, &Profile::Item_LostFocus);
+
+            // Apply theme-appropriate image processing (handles Retro Boy effect and standard loading)
+            Platform::String^ url = nullptr;
+            auto game = dynamic_cast<GameItem^>(args->Item);
+            auto achievement = dynamic_cast<RecentAchievementItem^>(args->Item);
+            
+            if (game != nullptr) url = game->ImageUrl;
+            else if (achievement != nullptr) url = achievement->ImageUrl;
+
+            if (url != nullptr)
+            {
+                // Find the Image controls in the visual tree of the container
+                std::function<void(DependencyObject^)> findAndApply = [&](DependencyObject^ parent)
+                {
+                    int count = Windows::UI::Xaml::Media::VisualTreeHelper::GetChildrenCount(parent);
+                    for (int i = 0; i < count; i++)
+                    {
+                        auto child = Windows::UI::Xaml::Media::VisualTreeHelper::GetChild(parent, i);
+                        
+                        auto img = dynamic_cast<Windows::UI::Xaml::Controls::Image^>(child);
+                        auto border = dynamic_cast<Windows::UI::Xaml::Controls::Border^>(child);
+
+                        if (img != nullptr)
+                        {
+                            if (img->Name == "IconImage")
+                            {
+                                ThemeSettings::SetImageWithRetroBoyEffect(img, url);
+                            }
+                            else if (img->Name == "IconFrame")
+                            {
+                                if (ThemeSettings::GetAppTheme() == 8) // Hedgehog
+                                {
+                                    img->Source = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(ref new Windows::Foundation::Uri("ms-appx:///Assets/Theme/Hedgehog/ring.png"));
+                                    img->Visibility = Windows::UI::Xaml::Visibility::Visible;
+                                }
+                                else
+                                {
+                                    img->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+                                }
+                            }
+                        }
+                        else if (border != nullptr)
+                        {
+                            if (border->Name == "IconBorder")
+                            {
+                                if (ThemeSettings::GetAppTheme() == 8) // Hedgehog
+                                {
+                                    border->Width = 75;
+                                    border->Height = 75;
+                                    border->CornerRadius = Windows::UI::Xaml::CornerRadius(37.5);
+                                }
+                                else
+                                {
+                                    border->Width = 100;
+                                    border->Height = 100;
+                                    border->CornerRadius = Windows::UI::Xaml::CornerRadius(0);
+                                }
+                            }
+                            findAndApply(border);
+                        }
+                        else
+                        {
+                            findAndApply(child);
+                        }
+                    }
+                };
+                findAndApply(container);
+            }
         }
     }
 }

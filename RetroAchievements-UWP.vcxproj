@@ -66,7 +66,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
@@ -159,6 +159,9 @@
     <ClInclude Include="LeaderboardPage.xaml.h">
       <DependentUpon>LeaderboardPage.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="PointsShop.xaml.h">
+      <DependentUpon>PointsShop.xaml</DependentUpon>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -171,6 +174,7 @@
     <Page Include="GameInfoPage.xaml" />
     <Page Include="AllGamesPage.xaml" />
     <Page Include="LeaderboardPage.xaml" />
+    <Page Include="PointsShop.xaml" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -185,6 +189,56 @@
     <Image Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Image Include="Assets\StoreLogo.png" />
     <Image Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Image Include="Assets\Avatars\novice.png" />
+    <Image Include="Assets\Avatars\amateur.png" />
+    <Image Include="Assets\Avatars\pro.png" />
+    <Image Include="Assets\Avatars\ring_of_fire.png" />
+    <Image Include="Assets\Avatars\ice_ring.png" />
+    <Image Include="Assets\Avatars\thorned_rose.png" />
+    <Image Include="Assets\Avatars\steampunk.png" />
+    <Image Include="Assets\Avatars\cherryblossom.png" />
+    <Image Include="Assets\Avatars\colorpicker.png" />
+    <Image Include="Assets\Avatars\darkflame.png" />
+    <Image Include="Assets\Avatars\crayon.png" />
+    <Image Include="Assets\Avatars\collared.png" />
+    <Image Include="Assets\Avatars\kanagawa.png" />
+    <Image Include="Assets\Avatars\f_brick.png" />
+    <Image Include="Assets\Avatars\puffycloud.png" />
+    <Image Include="Assets\Avatars\hermaeus.png" />
+    <Image Include="Assets\Avatars\ghostly.png" />
+    <Image Include="Assets\Avatars\fallingleaves.png" />
+    <Image Include="Assets\Avatars\kc_pet.png" />
+    <Image Include="Assets\Avatars\cream.png" />
+    <Image Include="Assets\Avatars\demonic.png" />
+    <Image Include="Assets\Avatars\sketchy.png" />
+    <Image Include="Assets\Avatars\royalty.png" />
+    <Image Include="Assets\Avatars\b_red.png" />
+    <Image Include="Assets\Avatars\b_blue.png" />
+    <Image Include="Assets\Avatars\b_green.png" />
+    <Image Include="Assets\Avatars\b_silver.png" />
+    <Image Include="Assets\Avatars\b_gold.png" />
+    <Image Include="Assets\Avatars\template.png" />
+    <Image Include="Assets\Theme\ArcadeHero\bg.png" />
+    <Image Include="Assets\Theme\ArcadeHero\ico.png" />
+    <Image Include="Assets\Theme\Netflix\bg.png" />
+    <Image Include="Assets\Theme\Netflix\ico.png" />
+    <Image Include="Assets\Theme\Steam\bg.png" />
+    <Image Include="Assets\Theme\Steam\ico.png" />
+    <Image Include="Assets\Theme\RetroBoy\bg.png" />
+    <Image Include="Assets\Theme\RetroBoy\ico.png" />
+    <Image Include="Assets\Theme\Hedgehog\bg.png" />
+    <Image Include="Assets\Theme\Hedgehog\ico.png" />
+    <Image Include="Assets\Theme\Hedgehog\ring.png" />
+    <Image Include="Assets\Theme\RetroStation\ico.png" />
+    <Image Include="Assets\Theme\RetroStation\ico1.png" />
+    <Image Include="Assets\Theme\RetroStation\ico1_sel.png" />
+    <Image Include="Assets\Theme\RetroStation\ico2.png" />
+    <Image Include="Assets\Theme\RetroStation\ico2_sel.png" />
+    <Image Include="Assets\Theme\RetroStation\ico3.png" />
+    <Image Include="Assets\Theme\RetroStation\ico3_sel.png" />
+    <Image Include="Assets\Theme\Blade\bg.png" />
+    <Image Include="Assets\Theme\Blade\ico.png" />
+    <Image Include="Assets\Theme\Custom\ico.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.xaml.cpp">
@@ -214,6 +268,9 @@
     <ClCompile Include="LeaderboardPage.xaml.cpp">
       <DependentUpon>LeaderboardPage.xaml</DependentUpon>
     </ClCompile>
+    <ClCompile Include="PointsShop.xaml.cpp">
+      <DependentUpon>PointsShop.xaml</DependentUpon>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="node\package.json" />
@@ -221,6 +278,8 @@
     <None Include="node\README.md" />
     <None Include="RetroAchievements-UWP_TemporaryKey.pfx" />
     <None Include="RetroAchievementsClientExample.js" />
+    <Font Include="Assets\Fonts\Silkscreen.ttf" />
+    <Font Include="Assets\Theme\Hedgehog\Sage.otf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

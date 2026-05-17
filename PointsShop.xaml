@@ -1,0 +1,203 @@
+<Page
+    x:Class="RetroAchievements_UWP.PointsShop"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:RetroAchievements_UWP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid x:Name="RootGrid">
+        <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <Grid Width="1120" Height="800">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header Area -->
+                <Grid Grid.Row="0" Margin="20,5,20,5">
+                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Orientation="Horizontal" Spacing="25">
+                        <!-- Back Button -->
+                        <Button x:Name="BackButton" Click="BackButton_Click" 
+                                Style="{StaticResource NavigationBackButtonNormalStyle}"
+                                VerticalAlignment="Center" Margin="0,0,10,0"/>
+
+                        <!-- User Profile Image (Circular with Frame) -->
+                        <Grid Width="120" Height="120">
+                            <Border x:Name="AvatarBorder" Width="100" Height="100" CornerRadius="50" BorderThickness="3" BorderBrush="{ThemeResource SystemControlHighlightAccentBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Border.Background>
+                                    <ImageBrush x:Name="ProfileImageBrush" Stretch="UniformToFill"/>
+                                </Border.Background>
+                            </Border>
+                            <Image x:Name="AvatarFrameImage" Width="120" Height="120" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Grid>
+
+                        <StackPanel VerticalAlignment="Center" Spacing="2">
+                            <TextBlock x:Name="UserTextBlock" FontSize="28" FontWeight="Bold"/>
+                            <TextBlock x:Name="MottoTextBlock" FontSize="14" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" Margin="0,0,0,8"/>
+                            
+                            <!-- Member Since & Points Badge HUD -->
+                            <StackPanel Orientation="Horizontal" Spacing="15">
+                                <StackPanel>
+                                    <TextBlock Text="MEMBER SINCE" FontSize="9" FontWeight="Bold" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" Opacity="0.8"/>
+                                    <TextBlock x:Name="MemberSinceTextBlock" FontSize="13" FontWeight="SemiBold"/>
+                                </StackPanel>
+                                <Rectangle Width="1" Height="25" Fill="{ThemeResource SystemControlForegroundChromeDisabledLowBrush}" VerticalAlignment="Center"/>
+                                <StackPanel>
+                                    <TextBlock x:Name="TotalPointsLabel" Text="TOTAL POINTS" FontSize="9" FontWeight="Bold" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" Opacity="0.8"/>
+                                    <TextBlock x:Name="TotalPointsTextBlock" FontSize="13" FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Grid>
+                            <StackPanel x:Name="AppTitleTextStack" HorizontalAlignment="Right">
+                                <TextBlock x:Name="AppTitleTextBlock" Text="RetroAchievements" 
+                                           FontSize="28" 
+                                           FontWeight="Bold" 
+                                           HorizontalAlignment="Right"/>
+                                <TextBlock Text="v1.1.1 UWP" 
+                                           FontSize="14" 
+                                           Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+                                           HorizontalAlignment="Right"/>
+                            </StackPanel>
+                            <Image x:Name="NetflixLogoImage" 
+                                   Source="ms-appx:///Assets/Theme/Netflix/ico.png" 
+                                   Height="180" 
+                                   HorizontalAlignment="Right" 
+                                   Visibility="Collapsed"
+                                   Stretch="Uniform"/>
+                            <Image x:Name="SteamLogoImage" 
+                                   Source="ms-appx:///Assets/Theme/Steam/ico.png" 
+                                   Height="120" 
+                                   HorizontalAlignment="Right" 
+                                   Visibility="Collapsed"
+                                   Stretch="Uniform"/>
+                            <Image x:Name="HedgehogLogoImage" 
+                                   Source="ms-appx:///Assets/Theme/Hedgehog/ico.png" 
+                                   Height="130" 
+                                   HorizontalAlignment="Right" 
+                                   Visibility="Collapsed"
+                                   Stretch="Uniform"/>
+                            <Image x:Name="BladeLogoImage" 
+                                   Source="ms-appx:///Assets/Theme/Blade/ico.png" 
+                                   Height="130" 
+                                   HorizontalAlignment="Right" 
+                                   Visibility="Collapsed"
+                                   Stretch="Uniform"/>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Header Separator -->
+                <Rectangle Grid.Row="1" Height="2" VerticalAlignment="Top" Fill="{ThemeResource SystemControlHighlightAccentBrush}" Opacity="0.5" Margin="20,10,20,0" Visibility="{ThemeResource HeaderSeparatorVisibility}"/>
+
+                <!-- Content Area -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,20,0,0">
+                    <StackPanel Orientation="Vertical" Padding="20">
+                        <Border Background="{ThemeResource SectionBackgroundBrush}" 
+                                BorderThickness="{ThemeResource SectionBorderThickness}" 
+                                BorderBrush="{ThemeResource SectionBorderBrush}" 
+                                CornerRadius="{ThemeResource SectionCornerRadius}">
+                            <Border BorderBrush="{ThemeResource SegaSectionWhiteBrush}" 
+                                    BorderThickness="{ThemeResource SegaSectionWhiteThickness}" 
+                                    CornerRadius="{ThemeResource SegaSectionWhiteCornerRadius}">
+                                <Border BorderBrush="{ThemeResource SegaSectionInnerBlueBrush}" 
+                                        BorderThickness="{ThemeResource SegaSectionInnerBlueThickness}" 
+                                        CornerRadius="{ThemeResource SegaSectionInnerBlueCornerRadius}"
+                                        Padding="15">
+                                    <StackPanel>
+                                 <TextBlock x:Name="AvatarFramesTitleTextBlock" Text="Avatar Frames" FontSize="28" FontWeight="Bold" Margin="0,0,0,20"/>
+                                
+                                <GridView x:Name="ShopGridView" ItemsSource="{x:Bind Items}" SelectionMode="None" IsItemClickEnabled="False">
+                                    <GridView.ItemTemplate>
+                                        <DataTemplate x:DataType="local:ShopItem">
+                                            <StackPanel Padding="15" Background="{ThemeResource LeaderboardItemBackgroundBrush}" Width="200" Margin="10" CornerRadius="4">
+                                                <Grid Width="120" Height="120" HorizontalAlignment="Center">
+                                                    <!-- Preview of frame over the actual user's avatar -->
+                                                    <Border Width="100" Height="100" CornerRadius="50" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                        <Border.Background>
+                                                            <ImageBrush ImageSource="{x:Bind ProfileImage}" Stretch="UniformToFill"/>
+                                                        </Border.Background>
+                                                    </Border>
+                                                    <Image Source="{x:Bind ImageUrl}" Width="120" Height="120" Stretch="Uniform"/>
+                                                </Grid>
+                                                <TextBlock Text="{x:Bind Title}" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,15,0,0" TextWrapping="Wrap" TextAlignment="Center"/>
+                                                <TextBlock Text="{x:Bind Cost}" FontSize="16" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" HorizontalAlignment="Center" FontWeight="SemiBold" Margin="0,5,0,0"/>
+                                                
+                                                <Button Content="{x:Bind ButtonText, Mode=OneWay}" 
+                                                        Click="ActionButton_Click"
+                                                        IsEnabled="{x:Bind IsButtonEnabled, Mode=OneWay}"
+                                                        HorizontalAlignment="Stretch" 
+                                                        Margin="0,15,0,0" 
+                                                        Background="{ThemeResource ButtonBackground}" 
+                                                        BorderBrush="{ThemeResource ButtonBorderBrush}"
+                                                        BorderThickness="1.5"
+                                                        Foreground="White"
+                                                        FontWeight="Bold"
+                                                        CornerRadius="4"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridView.ItemTemplate>
+                                </GridView>
+                                    </StackPanel>
+                                </Border>
+                            </Border>
+                        </Border>
+
+                        <!-- Themes Section -->
+                        <Border Background="{ThemeResource SectionBackgroundBrush}" 
+                                BorderThickness="{ThemeResource SectionBorderThickness}" 
+                                BorderBrush="{ThemeResource SectionBorderBrush}" 
+                                CornerRadius="{ThemeResource SectionCornerRadius}" 
+                                Margin="0,30,0,0">
+                            <Border BorderBrush="{ThemeResource SegaSectionWhiteBrush}" 
+                                    BorderThickness="{ThemeResource SegaSectionWhiteThickness}" 
+                                    CornerRadius="{ThemeResource SegaSectionWhiteCornerRadius}">
+                                <Border BorderBrush="{ThemeResource SegaSectionInnerBlueBrush}" 
+                                        BorderThickness="{ThemeResource SegaSectionInnerBlueThickness}" 
+                                        CornerRadius="{ThemeResource SegaSectionInnerBlueCornerRadius}"
+                                        Padding="15">
+                                    <StackPanel>
+                                 <TextBlock x:Name="ThemesTitleTextBlock" Text="Themes" FontSize="28" FontWeight="Bold" Margin="0,0,0,20"/>
+                                <GridView x:Name="ThemesGridView" ItemsSource="{x:Bind Themes}" SelectionMode="None" IsItemClickEnabled="False">
+                                    <GridView.ItemTemplate>
+                                        <DataTemplate x:DataType="local:ShopItem">
+                                            <StackPanel Padding="15" Background="{ThemeResource LeaderboardItemBackgroundBrush}" Width="200" Margin="10" CornerRadius="4">
+                                                <Grid Width="120" Height="120" HorizontalAlignment="Center">
+                                                    <!-- Theme icon/preview -->
+                                                    <Image Source="{x:Bind ImageUrl}" Width="120" Height="120" Stretch="Uniform"/>
+                                                </Grid>
+                                                <TextBlock Text="{x:Bind Title}" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,15,0,0" TextWrapping="Wrap" TextAlignment="Center"/>
+                                                <TextBlock Text="{x:Bind Cost}" FontSize="16" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" HorizontalAlignment="Center" FontWeight="SemiBold" Margin="0,5,0,0"/>
+                                                
+                                                <!-- Theme button is unclickable (IsHitTestVisible=False) but still selectable in the grid -->
+                                                <Button Content="{x:Bind ButtonText, Mode=OneWay}" 
+                                                        IsEnabled="{x:Bind IsButtonEnabled, Mode=OneWay}"
+                                                        IsHitTestVisible="False"
+                                                        HorizontalAlignment="Stretch" 
+                                                        Margin="0,15,0,0" 
+                                                        Background="{ThemeResource ButtonBackground}" 
+                                                        BorderBrush="{ThemeResource ButtonBorderBrush}"
+                                                        BorderThickness="1.5"
+                                                        Foreground="White"
+                                                        FontWeight="Bold"
+                                                        CornerRadius="4"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridView.ItemTemplate>
+                                </GridView>
+                                    </StackPanel>
+                                </Border>
+                            </Border>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Viewbox>
+    </Grid>
+</Page>

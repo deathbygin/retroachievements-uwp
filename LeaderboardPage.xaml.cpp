@@ -111,18 +111,66 @@ void LeaderboardPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEve
         UserProfileHeaderData^ headerData = param->Header;
         if (headerData != nullptr)
         {
-            UserProfileImage->Source = headerData->ProfileImage;
             UserTextBlock->Text = headerData->Username;
             MemberSinceTextBlock->Text = headerData->MemberSince;
-            MottoTextBlock->Text = headerData->Motto;
             TotalPointsTextBlock->Text = headerData->TotalPoints;
+
+            ProfileImageBrush->ImageSource = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(ref new Windows::Foundation::Uri(headerData->ProfileImageUrl));
+
+            // Load active avatar frame
+            auto settings = Windows::Storage::ApplicationData::Current->LocalSettings->Values;
+            if (settings->HasKey("ActiveAvatarFrame"))
+            {
+                auto activeFrameUrl = dynamic_cast<Platform::String^>(settings->Lookup("ActiveAvatarFrame"));
+                if (activeFrameUrl != nullptr)
+                {
+                    AvatarFrameImage->Source = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(ref new Windows::Foundation::Uri(activeFrameUrl));
+                }
+            }
+            else
+            {
+                AvatarFrameImage->Source = nullptr;
+            }
         }
 
         ThemeSettings::ApplyAccentToResources(this->Resources);
         this->RequestedTheme = ThemeSettings::GetElementTheme();
         ThemeSettings::ApplyThemeToTitle(AppTitleTextBlock);
         ThemeSettings::ApplyThemeToBackButton(BackButton);
-        ThemeSettings::ApplyBackground(RootGrid);
+        ThemeSettings::ApplyBackground(this);
+        ThemeSettings::ApplyThemeBorder(RootGrid);
+
+        // Apply theme-specific logos and labels
+        int currentTheme = ThemeSettings::GetAppTheme();
+        bool isNetflix = (currentTheme == 6);
+        bool isSteam = (currentTheme == 4);
+        bool isHedgehog = (currentTheme == 8);
+        bool isRetroStation = (currentTheme == 9);
+        bool isBlade = (currentTheme == 10);
+
+        if (NetflixLogoImage != nullptr) NetflixLogoImage->Visibility = isNetflix ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+        if (SteamLogoImage != nullptr) SteamLogoImage->Visibility = isSteam ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+        if (HedgehogLogoImage != nullptr) {
+            if (isHedgehog) {
+                HedgehogLogoImage->Source = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(ref new Windows::Foundation::Uri("ms-appx:///Assets/Theme/Hedgehog/ico.png"));
+                HedgehogLogoImage->Visibility = Windows::UI::Xaml::Visibility::Visible;
+            } else if (isRetroStation) {
+                HedgehogLogoImage->Source = ref new Windows::UI::Xaml::Media::Imaging::BitmapImage(ref new Windows::Foundation::Uri("ms-appx:///Assets/Theme/RetroStation/ico.png"));
+                HedgehogLogoImage->Visibility = Windows::UI::Xaml::Visibility::Visible;
+            } else {
+                HedgehogLogoImage->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+            }
+        }
+        if (BladeLogoImage != nullptr) BladeLogoImage->Visibility = isBlade ? Windows::UI::Xaml::Visibility::Visible : Windows::UI::Xaml::Visibility::Collapsed;
+
+        if (TotalPointsLabel != nullptr) TotalPointsLabel->Text = isHedgehog ? "TOTAL RINGS" : (isBlade ? "GAMERSCORE" : "TOTAL POINTS");
+
+        ThemeSettings::ApplyThemeFontToTitle(LeaderboardTitleTextBlock);
+
+        if (AppTitleTextStack != nullptr)
+        {
+            AppTitleTextStack->Visibility = (isNetflix || isSteam || isHedgehog || isRetroStation || isBlade) ? Windows::UI::Xaml::Visibility::Collapsed : Windows::UI::Xaml::Visibility::Visible;
+        }
         BackButton->Focus(Windows::UI::Xaml::FocusState::Programmatic);
 
         GameItem^ game = param->Game;
@@ -338,6 +386,7 @@ void LeaderboardPage::OnContainerContentChanging(ListViewBase^ sender, Container
         auto container = args->ItemContainer;
         if (container != nullptr)
         {
+            // Attach focus handlers to the container (the GridViewItem)
             container->GotFocus += ref new RoutedEventHandler(this, &LeaderboardPage::Item_GotFocus);
             container->LostFocus += ref new RoutedEventHandler(this, &LeaderboardPage::Item_LostFocus);
         }
@@ -349,6 +398,7 @@ void LeaderboardPage::Item_GotFocus(Platform::Object^ sender, Windows::UI::Xaml:
     auto container = dynamic_cast<DependencyObject^>(sender);
     if (container != nullptr)
     {
+        // Helper to find an element with a tooltip recursively
         std::function<void(DependencyObject^)> openTooltip = [&](DependencyObject^ obj)
         {
             auto tooltip = ToolTipService::GetToolTip(obj);
@@ -368,6 +418,7 @@ void LeaderboardPage::Item_GotFocus(Platform::Object^ sender, Windows::UI::Xaml:
                 openTooltip(Windows::UI::Xaml::Media::VisualTreeHelper::GetChild(obj, i));
             }
         };
+
         openTooltip(container);
     }
 }
@@ -377,6 +428,7 @@ void LeaderboardPage::Item_LostFocus(Platform::Object^ sender, Windows::UI::Xaml
     auto container = dynamic_cast<DependencyObject^>(sender);
     if (container != nullptr)
     {
+        // Helper to close tooltip recursively
         std::function<void(DependencyObject^)> closeTooltip = [&](DependencyObject^ obj)
         {
             auto tooltip = ToolTipService::GetToolTip(obj);
@@ -396,6 +448,7 @@ void LeaderboardPage::Item_LostFocus(Platform::Object^ sender, Windows::UI::Xaml
                 closeTooltip(Windows::UI::Xaml::Media::VisualTreeHelper::GetChild(obj, i));
             }
         };
+
         closeTooltip(container);
     }
 }
