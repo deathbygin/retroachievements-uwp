@@ -1,4 +1,7 @@
 # RetroAchievements UWP
+
+[Check out all of my projects here!](https://dbgdungeon.com).
+
 A vibe-coded UWP RetroAchievements app for Xbox/PC that displays information queried from the RetroAchievements API.
 Disclaimer: This app is vibe-coded. Use at your own risk and do not distribute this code anywhere AI-generated code is not allowed.
 
